@@ -10,6 +10,34 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+
+  /* FitLog Primary 색상 */
+  --color-fitlog-100: #f8d6d7;
+  --color-fitlog-200: #f3b0b2;
+  --color-fitlog-300: #f08c90;
+  --color-fitlog-400: #ee656c;
+  --color-fitlog-500: #e63946;
+  --color-fitlog-600: #c6303b;
+  --color-fitlog-700: #9c232d;
+  --color-fitlog-800: #6e161d;
+  --color-fitlog-900: #40090d;
+
+  /* FitLog Secondary 색상 */
+  --color-fitlog-second-100: #d1dcf5;
+  --color-fitlog-second-200: #a5bded;
+  --color-fitlog-second-300: #7aa2e6;
+  --color-fitlog-second-400: #5389d6;
+  --color-fitlog-second-500: #4472b3;
+  --color-fitlog-second-600: #365c92;
+  --color-fitlog-second-700: #294874;
+  --color-fitlog-second-800: #1d3557;
+  --color-fitlog-second-900: #0f1f36;
+
+  /* FitLog Accent(Success) */
+  --color-fitlog-accent: #34c759;
+
+  /* FitLog Text */
+  --color-fitlog-text: #333333;
 }
 
 @media (prefers-color-scheme: dark) {
