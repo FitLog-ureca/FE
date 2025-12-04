@@ -1,5 +1,32 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import localFont from "next/font/local";
+
+const nanumSquare = localFont({
+  src: [
+    {
+      path: "../assets/fonts/NanumSquareL.ttf",
+      weight: "300",
+      style: "normal",
+    },
+    {
+      path: "../assets/fonts/NanumSquareR.ttf",
+      weight: "400",
+      style: "normal",
+    },
+    {
+      path: "../assets/fonts/NanumSquareB.ttf",
+      weight: "700",
+      style: "normal",
+    },
+    {
+      path: "../assets/fonts/NanumSquareEB.ttf",
+      weight: "800",
+      style: "normal",
+    },
+  ],
+  variable: "--font-nanum-square",
+});
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -12,7 +39,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="ko">
+    <html lang="ko" className={`${nanumSquare.variable}`}>
       <body className="overscroll-none">{children}</body>
     </html>
   );
