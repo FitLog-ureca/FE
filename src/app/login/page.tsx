@@ -15,7 +15,7 @@ export default function LoginPage() {
       <Image
         src={pushup}
         className="absolute right-36 bottom-16 h-80 w-80 opacity-70"
-        alt="dumbbell"
+        alt="pushup"
       />
       <LoginForm />
     </div>
