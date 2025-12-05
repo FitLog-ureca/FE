@@ -14,7 +14,7 @@ export default function LoginForm() {
     <form action={loginAction}>
       <div className="flex h-120 w-96 flex-col items-center rounded-xl bg-white border-fitlog-beige border shadow-fitlog-form">
         <div className="flex flex-row items-center justify-center py-14">
-          <div className="bg-fitlog-500 mr-4 flex h-12 w-12 items-center justify-center rounded-2xl">
+          <div className="bg-fitlog-500 mr-4 flex h-12 w-12 items-center justify-center rounded-2xl shadow-fitlog-logo">
             <Flame className="h-6 w-6 items-center justify-center text-white" />
           </div>
           <p className="text-fitlog-500 text-4xl font-extrabold">FitLog</p>

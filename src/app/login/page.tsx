@@ -2,7 +2,7 @@
 import Image from "next/image";
 import dumbbell from "@/assets/images/dumbbell.png";
 import pushup from "@/assets/images/pushup.png";
-import LoginForm from "@/components/login/LoginForm";
+import LoginForm from "@/components/auth/login/LoginForm";
 
 export default function LoginPage() {
   return (
