@@ -10,17 +10,17 @@ export default function UserIcon() {
       <Popover>
         <PopoverTrigger asChild>
           <button
-            className="p-1 border-2 border-gray-600 rounded-full hover:bg-gray-100 transition flex items-center justify-center"
+            className="p-1 border-2 border-gray-600 rounded-full hover:opacity-60 transition cursor-pointer flex items-center justify-center"
             aria-label="user menu"
           >
             <User className="w-6 h-6 text-gray-600" />
           </button>
         </PopoverTrigger>
-        <PopoverContent className="min-w-80 p-4">
+        <PopoverContent side="bottom" align="end" sideOffset={6} className="min-w-80 p-4">
           <header className="flex justify-between items-center">
             <p className="font-bold text-md text-gray-500">프로필</p>
             <PopoverClose asChild>
-              <X className="w-5 h-5 text-gray-500" />
+              <X className="w-5 h-5 text-gray-500 cursor-pointer" />
             </PopoverClose>
           </header>
           <main className="flex flex-col items-center">
