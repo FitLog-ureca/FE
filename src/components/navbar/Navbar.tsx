@@ -2,7 +2,7 @@
 
 import FitLogLogo from "@/components/ui/FitLogLogo";
 import Link from "next/link";
-import UserIcon from "../ui/UserIcon";
+import UserIcon from "@/components/ui/UserIcon";
 
 export default function Navbar() {
   return (

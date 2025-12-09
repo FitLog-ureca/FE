@@ -1,5 +1,5 @@
 import { Play, User, X } from "lucide-react";
-import { Popover, PopoverContent, PopoverTrigger } from "./popover";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import Image from "next/image";
 import greeting from "@/assets/images/greeting.png";
 import { PopoverClose } from "@radix-ui/react-popover";
@@ -16,7 +16,7 @@ export default function UserIcon() {
             <User className="w-6 h-6 text-gray-600" />
           </button>
         </PopoverTrigger>
-        <PopoverContent className="min-w-[320px] p-4">
+        <PopoverContent className="min-w-80 p-4">
           <header className="flex justify-between items-center">
             <p className="font-bold text-md text-gray-500">프로필</p>
             <PopoverClose asChild>
