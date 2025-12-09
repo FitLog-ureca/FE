@@ -3,6 +3,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import Image from "next/image";
 import greeting from "@/assets/images/greeting.png";
 import { PopoverClose } from "@radix-ui/react-popover";
+import ActionButton from "@/components/ui/ActionButton";
 
 export default function UserIcon() {
   return (
@@ -29,7 +30,7 @@ export default function UserIcon() {
               alt="프로필 사진"
               className="w-22 h-22 p-1 rounded-full border-2 border-fitlog-100"
             />
-            <div className="w-full rounded-sm p-3 mt-3 space-y-2 bg-gray-100">
+            <div className="w-full rounded-xl p-3 mt-3 space-y-2 bg-gray-100">
               <section>
                 <p className="text-[10px] text-gray-400">이름</p>
                 <p className="text-sm">박준형</p>
@@ -43,10 +44,10 @@ export default function UserIcon() {
                 <p className="text-sm">아이 니드 프로틴!</p>
               </section>
             </div>
-            <button className="flex justify-center items-center mt-3 w-full bg-fitlog-500 text-white py-2 rounded-lg">
+            <ActionButton className="mt-3 w-full flex items-center justify-center py-2">
               <Play className="w-4 h-4 mr-2" />
-              <p className="text-sm">수정</p>
-            </button>
+              수정
+            </ActionButton>
           </main>
         </PopoverContent>
       </Popover>
