@@ -1,19 +1,23 @@
 export default function MainPage() {
   return (
-    <div className="flex h-full">
-      {/* 왼쪽: Calendar */}
-      <aside className="w-1/2  flex items-center justify-center border-r">
-        <div className="w-[70%] h-[60%] bg-gray-200 rounded-lg flex items-center justify-center">
-          <p className="text-gray-600">Calendar 자리</p>
-        </div>
-      </aside>
+ <div className="h-screen flex justify-center px-28">
+      <div className="w-full max-w-6xl py-10 grid grid-cols-1 md:grid-cols-2 gap-16">
 
-      {/* 오른쪽: TodoList */}
-      <section className="w-1/2 pr-4 flex items-center justify-center">
-        <div className="w-[70%] h-[80%] bg-gray-300 rounded-lg flex items-center justify-center">
-          <p className="text-gray-600">TodoList 자리</p>
-        </div>
-      </section>
+        {/* Calendar */}
+        <section className="flex justify-center items-center">
+          <div className="w-[70%] h-[70%] bg-gray-200 rounded-lg flex justify-center items-center">
+            Calendar
+          </div>
+        </section>
+
+        {/* TodoList */}
+        <section className="flex justify-center items-center">
+          <div className="w-[70%] h-[80%] bg-gray-300 rounded-lg flex justify-center items-center">
+            TodoList
+          </div>
+        </section>
+
+      </div>
     </div>
   );
 }
