@@ -1,8 +1,8 @@
 "use client";
 
 import FitLogLogo from "@/components/ui/FitLogLogo";
-import UserIcon from "@/components/ui/UserIcon";
 import Link from "next/link";
+import UserIcon from "../ui/UserIcon";
 
 export default function Navbar() {
   return (
@@ -18,9 +18,8 @@ export default function Navbar() {
       </Link>
 
       {/* 오른쪽 - 유저 아이콘 */}
-      <section>
-        <UserIcon />
-      </section>
+      {/* <UserProfilePopover /> */}
+      <UserIcon/>
     </nav>
   );
 }
