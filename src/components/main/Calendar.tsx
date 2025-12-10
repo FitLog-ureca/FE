@@ -4,18 +4,19 @@ import { useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { cn } from "@/lib/cn";
 
-// 운동 강도 Mock 데이터
-const workoutIntensity: Record<string, number> = {
-  "2025-01-15": 3,
-  "2025-01-16": 2,
-  "2025-01-17": 1,
-  "2025-01-18": 3,
-  "2025-01-20": 2,
-  "2025-01-22": 3,
-  "2025-01-23": 1,
-  "2025-01-25": 2,
-  "2025-01-27": 3,
-  "2025-01-28": 2,
+import CalendarCell from "./CalendarCell";
+
+// 운동 강도 Mock 데이터 → CalendarCell에서도 재사용할 수 있도록 export
+export const workoutIntensity: Record<string, number> = {
+  "2025-11-30": 3,
+  "2025-12-01": 3,
+  "2025-12-02": 2,
+  "2025-12-03": 1,
+  "2025-12-04": 3,
+  "2025-12-05": 2,
+  "2025-12-06": 3,
+  "2025-12-07": 1,
+  "2025-12-09": 3,
 };
 
 export function Calendar({ className }: { className?: string }) {
@@ -26,103 +27,99 @@ export function Calendar({ className }: { className?: string }) {
   const month = currentMonth.getMonth();
 
   const firstDayOfMonth = new Date(year, month, 1);
-  const startDay = firstDayOfMonth.getDay(); // 1일이 무슨 요일인지 (0~6)
+  const startDay = firstDayOfMonth.getDay();
   const daysInMonth = new Date(year, month + 1, 0).getDate();
 
   const today = new Date();
   today.setHours(0, 0, 0, 0);
 
-//   const days: JSX.Element[] = [];
-  const days = [];
+  // 🔥 5주 / 6주 판단
+  const totalCells = startDay + daysInMonth;
+  const cellCount = totalCells <= 35 ? 35 : 42;
 
-  /** 🔹 앞 빈칸 렌더링 */
+  const cells = [];
+
+  /** 🔹 앞 빈 칸 (이전달) */
   for (let i = 0; i < startDay; i++) {
-    days.push(<div key={`empty-${i}`} className="aspect-square" />);
+    const prevDate = new Date(year, month, i - startDay + 1);
+    cells.push(
+      <CalendarCell
+        key={`prev-${i}`}
+        date={prevDate}
+        isCurrentMonth={false}
+        selectedDate={selectedDate}
+        today={today}
+        onSelect={setSelectedDate}
+      />
+    );
   }
 
-  /** 🔹 달 날짜 렌더링 */
+  /** 🔹 이번 달 날짜 */
   for (let day = 1; day <= daysInMonth; day++) {
     const date = new Date(year, month, day);
-    const dateKey = date.toISOString().split("T")[0];
-
-    const intensity = workoutIntensity[dateKey] || 0;
-    const isToday = date.toDateString() === today.toDateString();
-    const isSelected =
-      selectedDate && date.toDateString() === selectedDate.toDateString();
-
-    days.push(
-      <button
+    cells.push(
+      <CalendarCell
         key={day}
-        onClick={() => setSelectedDate(date)}
-        className={cn(
-          "aspect-square rounded-lg flex items-center justify-center text-sm font-medium transition-all relative shadow-sm",
+        date={date}
+        isCurrentMonth={true}
+        selectedDate={selectedDate}
+        today={today}
+        onSelect={setSelectedDate}
+      />
+    );
+  }
 
-          // 기본 색상
-          "bg-gray-100 text-gray-600 hover:bg-fitlog-200/40",
-
-          // 운동 강도 색상
-          intensity === 1 && "bg-fitlog-200 text-white",
-          intensity === 2 && "bg-fitlog-400 text-white",
-          intensity === 3 && "bg-fitlog-500 text-white",
-
-          // 선택 날짜 강조
-          isSelected && "ring-2 ring-fitlog-500 bg-fitlog-100",
-
-          // 오늘 날짜 강조
-          isToday && "border-2 border-fitlog-second-500"
-        )}
-      >
-        {day}
-
-        {/* 오늘 날짜 dot 표시 */}
-        {isToday && (
-          <div className="absolute bottom-1 left-1/2 -translate-x-1/2 w-1 h-1 bg-fitlog-second-500 rounded-full" />
-        )}
-      </button>
+  /** 🔹 남은 칸 (다음달) */
+  const remaining = cellCount - cells.length;
+  for (let i = 1; i <= remaining; i++) {
+    const nextDate = new Date(year, month + 1, i);
+    cells.push(
+      <CalendarCell
+        key={`next-${i}`}
+        date={nextDate}
+        isCurrentMonth={false}
+        selectedDate={selectedDate}
+        today={today}
+        onSelect={setSelectedDate}
+      />
     );
   }
 
   const weekDays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
   return (
-    <div className={cn("w-full bg-white rounded-xl p-6 shadow border border-gray-200,  overflow-y-auto", className)}>
-      {/* 🔥 상단 월 이동 UI */}
-      <div className="flex items-center justify-between mb-5">
-        <button
-          onClick={() =>
-            setCurrentMonth(new Date(year, month - 1, 1))
-          }
-        >
+    <div
+      className={cn(
+        "w-full rounded-xl bg-white p-6 shadow border border-gray-200 overflow-y-auto",
+        className
+      )}
+    >
+      {/* 🔥 상단 월 이동 */}
+      <div className="mb-5 flex items-center justify-between">
+        <button onClick={() => setCurrentMonth(new Date(year, month - 1, 1))}>
           <ChevronLeft className="h-5 w-5 text-gray-600 hover:text-fitlog-500" />
         </button>
 
-        <p className="text-lg font-semibold text-gray-800">
+        <p className="text-lg font-semibold">
           {year}년 {month + 1}월
         </p>
 
-        <button
-          onClick={() =>
-            setCurrentMonth(new Date(year, month + 1, 1))
-          }
-        >
+        <button onClick={() => setCurrentMonth(new Date(year, month + 1, 1))}>
           <ChevronRight className="h-5 w-5 text-gray-600 hover:text-fitlog-500" />
         </button>
       </div>
 
-      {/* 🔥 요일 라벨 */}
+      {/* 요일 헤더 */}
       <div className="grid grid-cols-7 gap-2 mb-2">
         {weekDays.map((day) => (
-          <div
-            key={day}
-            className="text-center text-xs font-semibold text-gray-500"
-          >
+          <div key={day} className="text-center text-xs font-semibold text-gray-500">
             {day}
           </div>
         ))}
       </div>
 
-      {/* 🔥 날짜 그리드 */}
-      <div className="grid grid-cols-7 gap-2">{days}</div>
+      {/* 날짜 셀 */}
+      <div className="grid grid-cols-7 gap-2">{cells}</div>
     </div>
   );
 }

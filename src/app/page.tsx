@@ -6,7 +6,7 @@ export default function MainPage() {
       <div className="grid w-full max-w-6xl grid-cols-1 gap-16 py-10 md:grid-cols-2">
         {/* Calendar */}
         <section className="flex items-center justify-center">
-          <Calendar className="w-full h-[70%]" />
+          <Calendar className="w-full h-auto" />
         </section>
 
         {/* TodoList */}
