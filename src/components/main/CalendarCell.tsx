@@ -32,12 +32,12 @@ export default function CalendarCell({
     <button
       onClick={() => onSelect(date)}
       className={cn(
-        "aspect-square rounded-lg flex items-center justify-center text-sm font-medium relative transition-all",
+        "aspect-square rounded-lg flex items-center justify-center text-sm font-medium relative transition-all cursor-pointer",
 
         // 🔹 현재 달 vs 이전/다음 달
         isCurrentMonth
-          ? "bg-gray-100 text-gray-700 hover:bg-fitlog-200/40"
-          : "bg-gray-50 text-gray-300 opacity-40 hover:opacity-80",
+          ? "bg-gray-200 text-gray-700 hover:bg-fitlog-200/40"
+          : "bg-gray-100 text-gray-400 hover:bg-fitlog-200/40",
 
         // 🔹 운동 강도 색상
         intensity === 1 && "bg-fitlog-200 text-white",
