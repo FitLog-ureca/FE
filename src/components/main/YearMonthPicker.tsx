@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState } from "react";
 import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover";
 import { X } from "lucide-react";
 import { cn } from "@/lib/cn";
@@ -19,7 +19,7 @@ export default function YearMonthPicker({ year, month, onSelect }: YearMonthPick
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
-        <button className="text-lg font-semibold hover:text-fitlog-500">
+        <button className="text-lg font-semibold hover:text-fitlog-500 cursor-pointer">
           {year}년 {month + 1}월
         </button>
       </PopoverTrigger>

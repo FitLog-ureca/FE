@@ -37,7 +37,7 @@ export default function CalendarCell({
         // 🔹 현재 달 vs 이전/다음 달
         isCurrentMonth
           ? "bg-gray-200 text-gray-700 hover:bg-fitlog-200/40"
-          : "bg-gray-100 text-gray-400 hover:bg-fitlog-200/40",
+          : "bg-gray-100 text-gray-400 opacity-80 hover:bg-fitlog-200/40",
 
         // 🔹 운동 강도 색상
         intensity === 1 && "bg-fitlog-200 text-white",
