@@ -85,7 +85,7 @@ export function Calendar({ className }: { className?: string }) {
   const weekDays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
   return (
-    <div className={cn("w-full bg-white rounded-xl p-6 shadow border border-gray-200", className)}>
+    <div className={cn("w-full bg-white rounded-xl p-6 shadow border border-gray-200,  overflow-y-auto", className)}>
       {/* 🔥 상단 월 이동 UI */}
       <div className="flex items-center justify-between mb-5">
         <button
