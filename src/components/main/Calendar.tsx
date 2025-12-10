@@ -33,13 +33,13 @@ export function Calendar({ className }: { className?: string }) {
   const today = new Date();
   today.setHours(0, 0, 0, 0);
 
-  // 🔥 5주 / 6주 판단
+  // 🔹 5주 / 6주 판단
   const totalCells = startDay + daysInMonth;
   const cellCount = totalCells <= 35 ? 35 : 42;
 
   const cells = [];
 
-  /** 🔹 앞 빈 칸 (이전달) */
+  /** 🔹 앞쪽 빈 칸 (이전달) */
   for (let i = 0; i < startDay; i++) {
     const prevDate = new Date(year, month, i - startDay + 1);
     cells.push(
@@ -69,7 +69,7 @@ export function Calendar({ className }: { className?: string }) {
     );
   }
 
-  /** 🔹 남은 칸 (다음달) */
+  /** 🔹 뒤쪽 칸 (다음달) */
   const remaining = cellCount - cells.length;
   for (let i = 1; i <= remaining; i++) {
     const nextDate = new Date(year, month + 1, i);
@@ -94,18 +94,20 @@ export function Calendar({ className }: { className?: string }) {
         className
       )}
     >
-      {/* 🔥 상단 월 이동 */}
+      {/* 🔹 상단 월 이동 */}
       <div className="mb-5 flex items-center justify-between">
-        <button onClick={() => setCurrentMonth(new Date(year, month - 1, 1))}>
-          <ChevronLeft className="h-5 w-5 text-gray-600 hover:text-fitlog-500" />
+        <button onClick={() => setCurrentMonth(new Date(year, month - 1, 1))} className="group flex h-10 w-10 items-center justify-center rounded-full 
+             hover:bg-fitlog-100 transition-colors">
+          <ChevronLeft className="h-5 w-5 text-gray-600 group-hover:text-fitlog-500" />
         </button>
 
         <p className="text-lg font-semibold">
           {year}년 {month + 1}월
         </p>
 
-        <button onClick={() => setCurrentMonth(new Date(year, month + 1, 1))}>
-          <ChevronRight className="h-5 w-5 text-gray-600 hover:text-fitlog-500" />
+        <button onClick={() => setCurrentMonth(new Date(year, month + 1, 1))} className="group flex h-10 w-10 items-center justify-center rounded-full 
+             hover:bg-fitlog-100 transition-colors">
+          <ChevronRight className="h-5 w-5 text-gray-600 group-hover:text-fitlog-500" />
         </button>
       </div>
 
