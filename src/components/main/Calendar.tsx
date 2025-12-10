@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { cn } from "@/lib/cn";
+import YearMonthPicker from "./YearMonthPicker";
 
 import CalendarCell from "./CalendarCell";
 
@@ -30,8 +31,14 @@ export function Calendar({ className }: { className?: string }) {
   const startDay = firstDayOfMonth.getDay();
   const daysInMonth = new Date(year, month + 1, 0).getDate();
 
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
+  // const today = new Date();
+  // today.setHours(0, 0, 0, 0);
+
+  const [today] = useState(() => {
+    const d = new Date();
+    d.setHours(0, 0, 0, 0);
+    return d;
+  });
 
   // 🔹 5주 / 6주 판단
   const totalCells = startDay + daysInMonth;
@@ -88,25 +95,32 @@ export function Calendar({ className }: { className?: string }) {
   const weekDays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
   return (
-    <div
-      className={cn(
-        "w-full rounded-xl bg-white p-6 shadow border border-gray-200 overflow-y-auto",
-        className
-      )}
-    >
+    <div className={cn("w-full rounded-xl bg-white p-6 shadow border border-gray-200", className)}>
       {/* 🔹 상단 월 이동 */}
       <div className="mb-5 flex items-center justify-between">
-        <button onClick={() => setCurrentMonth(new Date(year, month - 1, 1))} className="group flex h-10 w-10 items-center justify-center rounded-full 
-             hover:bg-fitlog-100 transition-colors">
+        <button
+          onClick={() => setCurrentMonth(new Date(year, month - 1, 1))}
+          className={cn(
+            "group flex h-10 w-10 items-center justify-center rounded-full",
+            "hover:bg-fitlog-100 transition-colors"
+          )}
+        >
           <ChevronLeft className="h-5 w-5 text-gray-600 group-hover:text-fitlog-500" />
         </button>
 
-        <p className="text-lg font-semibold">
-          {year}년 {month + 1}월
-        </p>
+        <YearMonthPicker
+          year={year}
+          month={month}
+          onSelect={(y, m) => setCurrentMonth(new Date(y, m, 1))}
+        />
 
-        <button onClick={() => setCurrentMonth(new Date(year, month + 1, 1))} className="group flex h-10 w-10 items-center justify-center rounded-full 
-             hover:bg-fitlog-100 transition-colors">
+        <button
+          onClick={() => setCurrentMonth(new Date(year, month + 1, 1))}
+          className={cn(
+            "group flex h-10 w-10 items-center justify-center rounded-full ",
+            "hover:bg-fitlog-100 transition-colors"
+          )}
+        >
           <ChevronRight className="h-5 w-5 text-gray-600 group-hover:text-fitlog-500" />
         </button>
       </div>
