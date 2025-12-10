@@ -1,5 +1,3 @@
-import React from "react";
-
 const FillLevel = ({ className }: { className?: string }) => {
   return (
     <section className={className}>

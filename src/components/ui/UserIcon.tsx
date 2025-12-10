@@ -34,15 +34,15 @@ export default function UserIcon() {
             />
             <div className="w-full rounded-xl p-3 mt-3 space-y-2 bg-gray-100">
               <section>
-                <p className="text-[10px] text-gray-400">이름</p>
+                <p className="text-xs text-gray-400">이름</p>
                 <p className="text-sm">박준형</p>
               </section>
               <section>
-                <p className="text-[10px] text-gray-400">나이</p>
-                <p className="text-sm">만 27세</p>
+                <p className="text-xs text-gray-400">나이</p>
+                <p className="text-sm">28세</p>
               </section>
               <section>
-                <p className="text-[10px] text-gray-400">자기소개</p>
+                <p className="text-xs text-gray-400">자기소개</p>
                 <p className="text-sm">아이 니드 프로틴!</p>
               </section>
             </div>

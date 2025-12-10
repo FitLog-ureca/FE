@@ -3,11 +3,10 @@
 import { useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { cn } from "@/lib/cn";
-import YearMonthPicker from "./YearMonthPicker";
+import YearMonthPicker from "@/components/main/YearMonthPicker";
+import CalendarCell from "@/components/main/CalendarCell";
 
-import CalendarCell from "./CalendarCell";
-
-// 운동 강도 Mock 데이터 → CalendarCell에서도 재사용할 수 있도록 export
+// 운동 강도 Mock 데이터
 export const workoutIntensity: Record<string, number> = {
   "2025-11-30": 3,
   "2025-12-01": 3,
@@ -31,22 +30,19 @@ export function Calendar({ className }: { className?: string }) {
   const startDay = firstDayOfMonth.getDay();
   const daysInMonth = new Date(year, month + 1, 0).getDate();
 
-  // const today = new Date();
-  // today.setHours(0, 0, 0, 0);
-
   const [today] = useState(() => {
     const d = new Date();
     d.setHours(0, 0, 0, 0);
     return d;
   });
 
-  // 🔹 5주 / 6주 판단
+  /* 5주 / 6주 판단 */
   const totalCells = startDay + daysInMonth;
   const cellCount = totalCells <= 35 ? 35 : 42;
 
   const cells = [];
 
-  /** 🔹 앞쪽 빈 칸 (이전달) */
+  /* 앞쪽 빈 칸 (이전달) */
   for (let i = 0; i < startDay; i++) {
     const prevDate = new Date(year, month, i - startDay + 1);
     cells.push(
@@ -61,7 +57,7 @@ export function Calendar({ className }: { className?: string }) {
     );
   }
 
-  /** 🔹 이번 달 날짜 */
+  /* 이번 달 날짜 */
   for (let day = 1; day <= daysInMonth; day++) {
     const date = new Date(year, month, day);
     cells.push(
@@ -76,7 +72,7 @@ export function Calendar({ className }: { className?: string }) {
     );
   }
 
-  /** 🔹 뒤쪽 칸 (다음달) */
+  /* 뒤쪽 칸 (다음달) */
   const remaining = cellCount - cells.length;
   for (let i = 1; i <= remaining; i++) {
     const nextDate = new Date(year, month + 1, i);
@@ -96,7 +92,7 @@ export function Calendar({ className }: { className?: string }) {
 
   return (
     <div className={cn("w-full rounded-xl bg-white p-6 shadow border border-gray-200", className)}>
-      {/* 🔹 상단 월 이동 */}
+      {/* 상단 월 이동 */}
       <div className="mb-5 flex items-center justify-between">
         <button
           onClick={() => setCurrentMonth(new Date(year, month - 1, 1))}
