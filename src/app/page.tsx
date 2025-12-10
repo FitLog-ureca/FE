@@ -5,14 +5,14 @@ export default function MainPage() {
 
         {/* Calendar */}
         <section className="flex justify-center items-center">
-          <div className="w-[70%] h-[70%] bg-gray-200 rounded-lg flex justify-center items-center">
+          <div className="w-full h-[70%] bg-gray-200 rounded-lg flex justify-center items-center">
             Calendar
           </div>
         </section>
 
         {/* TodoList */}
         <section className="flex justify-center items-center">
-          <div className="w-[70%] h-[80%] bg-gray-300 rounded-lg flex justify-center items-center">
+          <div className="w-full h-[80%] bg-gray-300 rounded-lg flex justify-center items-center">
             TodoList
           </div>
         </section>

@@ -37,7 +37,7 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="ko">
-      <body className="min-h-screen overscroll-none bg-[#FCEDEE]">
+      <body className="min-h-screen overscroll-none bg-fitlog-50">
         {/* 전역 네비바 */}
         <Navbar />
 
