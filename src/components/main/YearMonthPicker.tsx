@@ -8,13 +8,13 @@ import { cn } from "@/lib/cn";
 interface YearMonthPickerProps {
   year: number;
   month: number;
-  onSelect: (y: number, m: number) => void;
+  onSelect: (selectedYear: number, selectedMonth: number) => void;
 }
 
 export default function YearMonthPicker({ year, month, onSelect }: YearMonthPickerProps) {
   const [open, setOpen] = useState(false);
 
-  const years = Array.from({ length: 40 }, (_, i) => year - 20 + i);
+  const years = Array.from({ length: 11 }, (_, i) => year - 5 + i);
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -33,13 +33,14 @@ export default function YearMonthPicker({ year, month, onSelect }: YearMonthPick
       >
         {/* flex 컨테이너 */}
         <div className="flex gap-6 relative">
-          {/* 🔹 연도 선택 영역 */}
+          
+          {/* 🔹 연도 선택 */}
           <div className="w-25 h-40 overflow-y-auto border rounded-lg p-2">
             {years.map((y) => (
               <div
                 key={y}
                 onClick={() => {
-                  onSelect(y, month);
+                  onSelect(y, month); // y → selectedYear
                   setOpen(false);
                 }}
                 className={cn(
@@ -52,17 +53,17 @@ export default function YearMonthPicker({ year, month, onSelect }: YearMonthPick
             ))}
           </div>
 
-          {/* 🔹 월 선택 영역 */}
+          {/* 🔹 월 선택 */}
           <div className="grid grid-cols-4 gap-2 w-65">
             {Array.from({ length: 12 }, (_, m) => (
               <button
                 key={m}
                 onClick={() => {
-                  onSelect(year, m);
+                  onSelect(year, m); // m → selectedMonth
                   setOpen(false);
                 }}
                 className={cn(
-                  "py-2 rounded hover:bg-fitlog-100 text-center hover:cursor-pointer",
+                  "py-2 rounded hover:bg-fitlog-100 text-center cursor-pointer",
                   m === month && "bg-fitlog-500 text-white font-semibold"
                 )}
               >
@@ -72,9 +73,8 @@ export default function YearMonthPicker({ year, month, onSelect }: YearMonthPick
           </div>
 
           {/* X 버튼 */}
-          {/* X 버튼 - 월 선택 영역의 오른쪽 위에 고정 */}
           <button onClick={() => setOpen(false)} className="absolute top-0 -right-7 p-1">
-            <X className="w-5 h-5 text-gray-600 hover:text-fitlog-500 hover:cursor-pointer" />
+            <X className="w-5 h-5 text-gray-600 hover:text-fitlog-500 cursor-pointer" />
           </button>
         </div>
       </PopoverContent>
