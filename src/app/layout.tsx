@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import localFont from "next/font/local";
-import Navbar from "@/components/navbar/Navbar";
 import { Providers } from "@/app/providers";
+import NavWrapper from "@/components/navbar/NavWrapper";
 
 const nanumSquare = localFont({
   src: [
@@ -40,8 +40,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="ko" className={`${nanumSquare.variable}`}>
       <body className="bg-fitlog-50 min-h-screen overscroll-none">
         <Providers>
-          {/* 전역 네비바 */}
-          <Navbar />
+          {/* 전역 네비바 (/login, /signup 도메인 제외) */}
+          <NavWrapper />
 
           {/* 페이지 내용 */}
           <main className="h-[calc(100vh-72px)]">{children}</main>
