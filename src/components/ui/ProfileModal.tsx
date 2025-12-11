@@ -1,11 +1,13 @@
 "use client";
 
-import { Play, User, X } from "lucide-react";
+import { Play, User } from "lucide-react";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import Image from "next/image";
 import greeting from "@/assets/images/greeting.png";
 import { PopoverClose } from "@radix-ui/react-popover";
 import ActionButton from "@/components/ui/ActionButton";
+import CloseButton from "./CloseButton";
+
 
 export default function UserIcon() {
   return (
@@ -23,7 +25,7 @@ export default function UserIcon() {
           <header className="flex justify-between items-center">
             <p className="font-bold text-md text-gray-600">프로필</p>
             <PopoverClose asChild>
-              <X className="w-5 h-5 text-gray-600 cursor-pointer hover:text-fitlog-500" />
+              <CloseButton />
             </PopoverClose>
           </header>
           <main className="flex flex-col items-center">
