@@ -30,7 +30,7 @@ export default function YearMonthPicker({ year, month, onSelect }: YearMonthPick
 
       container.scrollTo({
         top: offset,
-        behavior: "smooth",
+        behavior: "auto",
       });
     }, 0);
   }, [open, year]);
