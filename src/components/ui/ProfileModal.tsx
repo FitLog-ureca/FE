@@ -1,3 +1,5 @@
+"use client";
+
 import { Play, User, X } from "lucide-react";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import Image from "next/image";
@@ -19,9 +21,9 @@ export default function UserIcon() {
         </PopoverTrigger>
         <PopoverContent side="bottom" align="end" sideOffset={6} className="min-w-80 p-4">
           <header className="flex justify-between items-center">
-            <p className="font-bold text-md text-gray-500">프로필</p>
+            <p className="font-bold text-md text-gray-600">프로필</p>
             <PopoverClose asChild>
-              <X className="w-5 h-5 text-gray-500 cursor-pointer" />
+              <X className="w-5 h-5 text-gray-600 cursor-pointer hover:text-fitlog-500" />
             </PopoverClose>
           </header>
           <main className="flex flex-col items-center">
@@ -32,15 +34,15 @@ export default function UserIcon() {
             />
             <div className="w-full rounded-xl p-3 mt-3 space-y-2 bg-gray-100">
               <section>
-                <p className="text-[10px] text-gray-400">이름</p>
+                <p className="text-xs text-gray-400">이름</p>
                 <p className="text-sm">박준형</p>
               </section>
               <section>
-                <p className="text-[10px] text-gray-400">나이</p>
-                <p className="text-sm">만 27세</p>
+                <p className="text-xs text-gray-400">나이</p>
+                <p className="text-sm">28세</p>
               </section>
               <section>
-                <p className="text-[10px] text-gray-400">자기소개</p>
+                <p className="text-xs text-gray-400">자기소개</p>
                 <p className="text-sm">아이 니드 프로틴!</p>
               </section>
             </div>
