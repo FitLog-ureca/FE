@@ -1,6 +1,7 @@
 // 공통 쿼리 키 보관
 
 export const QUERY_KEYS = {
+  // 아래는 예시
   //   todo: {
   //     all: ["todo"], // todo 와 관련도니 모든 캐시 데이터 무효화 가능
   //     list: ["todo", "list"], // todo list의 캐시 데이터 무효화
