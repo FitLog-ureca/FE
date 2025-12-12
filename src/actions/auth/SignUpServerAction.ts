@@ -8,20 +8,20 @@ export default async function signupAction(formData: FormData) {
   const birthRaw = formData.get("birth") as string;
   const birth = new Date(birthRaw).toISOString().split("T")[0];
 
-  // 1) 빈 값 체크
-  if (!name || !loginId || !password || !confirmPassword || !birth) {
-    throw new Error("모든 값을 입력해주세요.");
-  }
-  // 2) 비밀번호 길이 검증
-  if (!password || String(password).length < 8) {
-    throw new Error("비밀번호는 8자 이상이어야 합니다.");
-  }
-  // 3) 비밀번호 확인 검증
-  if (password !== confirmPassword) {
-    throw new Error("비밀번호가 일치하지 않습니다.");
-  }
-
   try {
+    // 1) 빈 값 체크
+    if (!name || !loginId || !password || !confirmPassword || !birth) {
+      throw new Error("모든 값을 입력해주세요.");
+    }
+    // 2) 비밀번호 길이 검증
+    if (!password || String(password).length < 8) {
+      throw new Error("비밀번호는 8자 이상이어야 합니다.");
+    }
+    // 3) 비밀번호 확인 검증
+    if (password !== confirmPassword) {
+      throw new Error("비밀번호가 일치하지 않습니다.");
+    }
+
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_API_URL}/auth/signup`,
       {
@@ -48,11 +48,15 @@ export default async function signupAction(formData: FormData) {
         success: true,
       };
     }
-  } catch (error) {
-    console.error("회원가입 에러", error);
+  } catch (error: unknown) {
+    let message = "회원가입 처리 중 오류가 발생했습니다.";
+
+    if (error instanceof Error) {
+      message = error.message;
+    }
     return {
       success: false,
-      message: "회원가입 처리 중 오류가 발생했습니다.",
+      message,
     };
   }
 }
