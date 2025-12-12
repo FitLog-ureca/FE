@@ -1,33 +1,81 @@
 import axios from "axios";
+import { tokenStore } from "@/store/AuthToken";
+import { isRestoringAuth } from "@/store/AuthStatus";
 
-export const apiClient = axios.create({
+const apiClient = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_URL,
   withCredentials: true,
 });
 
-// Request Interceptor — Access Token 자동 헤더 주입
-apiClient.interceptors.request.use(
-  (config) => {
-    if (typeof window !== "undefined") {
-      const token = localStorage.getItem("accessToken");
-      if (token) config.headers["Authorization"] = `Bearer ${token}`;
-    }
-    return config;
-  },
-  (error) => Promise.reject(error)
-);
+/* =========================
+   Request Interceptor
+========================= */
+apiClient.interceptors.request.use((config) => {
+  const token = tokenStore.get();
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
+});
 
-// Response Interceptor
+/* =========================
+   Refresh Lock
+========================= */
+let isRefreshing = false;
+let refreshQueue: Array<(token: string) => void> = [];
+
+const processQueue = (token: string) => {
+  refreshQueue.forEach((cb) => cb(token));
+  refreshQueue = [];
+};
+
+/* =========================
+   Response Interceptor
+========================= */
 apiClient.interceptors.response.use(
   (res) => res,
   async (error) => {
-    const status = error.response?.status;
+    const originalRequest = error.config;
 
-    // 401 발생 시 redirect (refresh는 middleware가 처리)
-    if (status === 401 && typeof window !== "undefined") {
-      window.location.href = "/login";
+    if (
+      error.response?.status === 401 &&
+      !originalRequest._retry &&
+      !isRestoringAuth
+    ) {
+      originalRequest._retry = true;
+
+      if (isRefreshing) {
+        return new Promise((resolve) => {
+          refreshQueue.push((token) => {
+            originalRequest.headers.Authorization = `Bearer ${token}`;
+            resolve(apiClient(originalRequest));
+          });
+        });
+      }
+
+      isRefreshing = true;
+
+      try {
+        const res = await apiClient.post("/auth/refresh");
+        const newToken = res.data.result.accessToken;
+
+        if (!newToken) throw new Error("No access token");
+
+        tokenStore.set(newToken);
+        processQueue(newToken);
+
+        originalRequest.headers.Authorization = `Bearer ${newToken}`;
+        return apiClient(originalRequest);
+      } catch (err) {
+        tokenStore.clear();
+        return Promise.reject(err);
+      } finally {
+        isRefreshing = false;
+      }
     }
 
     return Promise.reject(error);
   }
 );
+
+export default apiClient;

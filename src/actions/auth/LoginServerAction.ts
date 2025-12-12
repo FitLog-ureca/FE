@@ -37,7 +37,6 @@ export default async function loginAction(formData: FormData) {
     }
 
     const data = await response.json();
-    console.log("로그인 성공:", data);
 
     // Refresh Token만 쿠키에 저장 (Set-Cookie 헤더에서 파싱)
     // Access Token은 응답 body에 있으므로 클라이언트에서 별도 관리
@@ -46,7 +45,9 @@ export default async function loginAction(formData: FormData) {
       const refreshTokenMatch = setCookieHeader.match(/refreshToken=([^;]+)/);
       if (refreshTokenMatch) {
         const refreshToken = refreshTokenMatch[1];
-        (await cookies()).set("refreshToken", refreshToken, {
+        (await cookies()).set({
+          name: "refreshToken",
+          value: refreshToken,
           httpOnly: true,
           secure: process.env.NODE_ENV === "production",
           sameSite: "strict",
