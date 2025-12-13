@@ -16,7 +16,8 @@ export default function ActionButton({
       {...props}
       className={cn(
         "rounded-xl bg-fitlog-500 text-white text-sm transition-colors shadow-fitlog-btn cursor-pointer hover:bg-fitlog-700",
-        // disabled && "bg-gray-300 text-gray-500 hover:bg-gray-300 cursor-auto",
+        disabled &&
+          "bg-fitlog-700 text-gray-300 cursor-not-allowed hover:bg-fitlog-900 hover:none disabled:hover:bg-fitlog-900 disabled:pointer-events-none",
         error && "bg-red-400 hover:bg-red-500 text-white",
         className
       )}
