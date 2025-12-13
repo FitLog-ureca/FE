@@ -37,11 +37,16 @@ export default function GoalList() {
   const [goals, setGoals] = useState(mockDataGoal);
   const [completed, setCompleted] = useState(false);
   const idRef = useRef(3);
+  const setIdRef = useRef(1);
+
+  const onToggleCompleted = () => {
+    setCompleted(!completed);
+  };
 
   const onCreateGoal = () => {
     const newGoal = {
       id: idRef.current++,
-      exercise: null,
+      exercise: "운동 종목명",
       sets: [
         {
           id: 1,
@@ -55,22 +60,93 @@ export default function GoalList() {
     setGoals([...goals, newGoal]);
   };
 
-  const onToggleCompleted = () => {
-    setCompleted(!completed);
+  const onCreateSet = (goalId: number) => {
+    setGoals((prev) =>
+      prev.map((goal) =>
+        goal.id === goalId
+          ? {
+              ...goal,
+              sets: [
+                ...goal.sets,
+                {
+                  id: setIdRef.current++,
+                  setsNumber: goal.sets.length + 1,
+                  repsTarget: 0,
+                  weight: 0,
+                },
+              ],
+            }
+          : goal
+      )
+    );
+  };
+
+  const onRemoveGoal = (goalId: number) => {
+    setGoals((prev) => prev.filter((goal) => goal.id !== goalId));
+  };
+
+  const onRemoveSet = (goalId: number, setId: number) => {
+    setGoals((prev) =>
+      prev.map((goal) =>
+        goal.id === goalId
+          ? {
+              ...goal,
+              sets: goal.sets
+                .filter((set) => set.id !== setId)
+                .map((set, index) => ({
+                  ...set,
+                  setsNumber: index + 1,
+                })),
+            }
+          : goal
+      )
+    );
+  };
+
+  const onUpdateSet = (
+    goalId: number,
+    setId: number,
+    newValues: {
+      repsTarget?: number;
+      weight?: number;
+    }
+  ) => {
+    setGoals((prev) =>
+      prev.map((goal) =>
+        goal.id === goalId
+          ? {
+              ...goal,
+              sets: goal.sets.map((set) => (set.id === setId ? { ...set, ...newValues } : set)),
+            }
+          : goal
+      )
+    );
   };
 
   return (
     <div className="w-full flex flex-col gap-6">
-      {/* 날짜 및 운동 기록 텍스트 렌더링 */}
+      {/* 날짜, 텍스트, 운동 시작 버튼 렌더링 */}
       <GoalHeader completed={completed} />
 
       {/* SetList 여러개 렌더링 */}
       {goals.map((goal) => (
-        <SetList key={goal.id} goal={goal} />
+        <SetList
+          key={goal.id}
+          goal={goal}
+          completed={completed}
+          onCreateSet={onCreateSet}
+          onRemoveGoal={onRemoveGoal}
+          onRemoveSet={onRemoveSet}
+          onUpdateSet={onUpdateSet}
+        />
       ))}
 
       {/* 버튼 렌더링 */}
-      <Buttons completed={completed} onToggleCompleted={onToggleCompleted} onCreateGoal={onCreateGoal} />
+      <Buttons
+        completed={completed}
+        onToggleCompleted={onToggleCompleted}
+        onCreateGoal={onCreateGoal}
+      />
     </div>
   );
 }
