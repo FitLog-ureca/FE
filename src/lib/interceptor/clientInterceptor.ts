@@ -1,81 +1,91 @@
-import axios from "axios";
-import { tokenStore } from "@/store/AuthToken";
-import { isRestoringAuth } from "@/store/AuthStatus";
+import axios, { AxiosError, InternalAxiosRequestConfig } from "axios";
+import { tokenStore } from "@/store/tokenStore";
+import { authEvents } from "@/store/authEvents";
 
-const apiClient = axios.create({
+type RetryConfig = InternalAxiosRequestConfig & {
+  _retry?: boolean;
+};
+
+export const apiClient = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_URL,
-  withCredentials: true,
+  withCredentials: true, // refresh cookie 자동 포함
 });
 
-/* =========================
-   Request Interceptor
-========================= */
-apiClient.interceptors.request.use((config) => {
+// 요청 시 access token 자동 첨부
+apiClient.interceptors.request.use((config: InternalAxiosRequestConfig) => {
   const token = tokenStore.get();
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`;
-  }
+  if (token) config.headers.Authorization = `Bearer ${token}`;
   return config;
 });
 
-/* =========================
-   Refresh Lock
-========================= */
+// refresh 락 + 대기열
 let isRefreshing = false;
-let refreshQueue: Array<(token: string) => void> = [];
+let queue: Array<(token: string) => void> = [];
 
-const processQueue = (token: string) => {
-  refreshQueue.forEach((cb) => cb(token));
-  refreshQueue = [];
-};
+function resolveQueue(token: string) {
+  queue.forEach((cb) => cb(token));
+  queue = [];
+}
 
-/* =========================
-   Response Interceptor
-========================= */
 apiClient.interceptors.response.use(
   (res) => res,
-  async (error) => {
-    const originalRequest = error.config;
+  async (error: AxiosError) => {
+    const originalRequest = error.config as RetryConfig;
 
-    if (
-      error.response?.status === 401 &&
-      !originalRequest._retry &&
-      !isRestoringAuth
-    ) {
-      originalRequest._retry = true;
-
-      if (isRefreshing) {
-        return new Promise((resolve) => {
-          refreshQueue.push((token) => {
-            originalRequest.headers.Authorization = `Bearer ${token}`;
-            resolve(apiClient(originalRequest));
-          });
-        });
-      }
-
-      isRefreshing = true;
-
-      try {
-        const res = await apiClient.post("/auth/refresh");
-        const newToken = res.data.result.accessToken;
-
-        if (!newToken) throw new Error("No access token");
-
-        tokenStore.set(newToken);
-        processQueue(newToken);
-
-        originalRequest.headers.Authorization = `Bearer ${newToken}`;
-        return apiClient(originalRequest);
-      } catch (err) {
-        tokenStore.clear();
-        return Promise.reject(err);
-      } finally {
-        isRefreshing = false;
-      }
+    // 401 아니면 그대로 throw
+    if (error.response?.status !== 401 || !originalRequest) {
+      return Promise.reject(error);
     }
 
-    return Promise.reject(error);
+    // refresh 요청 자체가 401이면 -> 로그아웃 처리
+    const isRefreshCall =
+      typeof originalRequest.url === "string" &&
+      originalRequest.url.includes("/auth/refresh");
+    if (isRefreshCall) {
+      tokenStore.clear();
+      authEvents.emitLogout();
+      return Promise.reject(error);
+    }
+
+    // 이미 재시도한 요청이면 -> 로그아웃 처리(무한루프 방지)
+    if (originalRequest._retry) {
+      tokenStore.clear();
+      authEvents.emitLogout();
+      return Promise.reject(error);
+    }
+    originalRequest._retry = true;
+
+    // refresh 중이면 큐에 넣고 새 토큰 받으면 재시도
+    if (isRefreshing) {
+      return new Promise((resolve) => {
+        queue.push((newToken: string) => {
+          originalRequest.headers.Authorization = `Bearer ${newToken}`;
+          resolve(apiClient(originalRequest));
+        });
+      });
+    }
+
+    isRefreshing = true;
+
+    try {
+      // refresh 호출 (쿠키로 RT 전송)
+      const { data } = await apiClient.post("/auth/refresh");
+
+      const newAccessToken: string | undefined = data?.accessToken;
+      if (!newAccessToken)
+        throw new Error("No accessToken in refresh response");
+
+      tokenStore.set(newAccessToken);
+      resolveQueue(newAccessToken);
+
+      originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
+      return apiClient(originalRequest);
+    } catch (e) {
+      tokenStore.clear();
+      authEvents.emitLogout();
+      return Promise.reject(e);
+    } finally {
+      isRefreshing = false;
+    }
   }
 );
-
-export default apiClient;

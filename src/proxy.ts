@@ -1,47 +1,36 @@
-// 기존 middleware.ts
-
 import { NextRequest, NextResponse } from "next/server";
 
 const PUBLIC_PATHS = ["/login", "/signup"];
 
-export async function proxy(req: NextRequest) {
+export function proxy(req: NextRequest) {
   const { pathname } = req.nextUrl;
 
-  // Next.js 내부 리소스 경로나 공개 라우트는 통과
-  if (PUBLIC_PATHS.includes(pathname) || pathname.startsWith("/_next")) {
+  // 내부 리소스 / 정적 파일 / API
+  if (
+    pathname.startsWith("/_next") ||
+    pathname.startsWith("/api") ||
+    pathname.includes(".")
+  ) {
     return NextResponse.next();
   }
 
-  const refreshToken = req.cookies.get("refreshToken")?.value;
+  // 공개 경로
+  if (PUBLIC_PATHS.some((path) => pathname.startsWith(path))) {
+    return NextResponse.next();
+  }
 
-  // 로그인 안 되어있으면 redirect
+  // refresh token 존재 여부만 확인
+  const refreshToken = req.cookies.get("refreshToken");
+
   if (!refreshToken) {
-    return NextResponse.redirect(new URL("/login", req.url));
+    const loginUrl = new URL("/login", req.url);
+    loginUrl.searchParams.set("redirect", pathname);
+    return NextResponse.redirect(loginUrl);
   }
 
-  try {
-    // Refresh 요청
-    const refreshRes = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/auth/refresh`,
-      {
-        method: "POST",
-        credentials: "include",
-        headers: {
-          Cookie: `refreshToken=${refreshToken}`,
-        },
-      }
-    );
-
-    if (!refreshRes.ok) throw new Error("Refresh failed");
-
-    // accessToken/refreshToken 재발급 쿠키 전달
-    const response = NextResponse.next();
-    const setCookie = refreshRes.headers.get("set-cookie");
-    if (setCookie) {
-      response.headers.set("set-cookie", setCookie);
-    }
-    return response;
-  } catch {
-    return NextResponse.redirect(new URL("/login", req.url));
-  }
+  return NextResponse.next();
 }
+
+export const config = {
+  matcher: ["/((?!api|_next/static|_next/image|favicon.ico).*)"],
+};
