@@ -1,15 +1,17 @@
-interface SetItemType {
-  id: number;
-  setsNumber: number;
-  repsTarget: number;
-  weight: number;
-}
-
 interface GoalType {
   id: number;
   exercise: string | null;
   sets: SetItemType[];
 }
+
+interface SetItemType {
+  id: number;
+  setsNumber: number;
+  repsTarget: number | "";
+  weight: number | "";
+}
+
+type SetUpdatePayload = Partial<Pick<SetItemType, "repsTarget" | "weight">>;
 
 interface SetListProps {
   goal: GoalType;
@@ -17,31 +19,13 @@ interface SetListProps {
   onCreateSet: (goalId: number) => void;
   onRemoveGoal: (goalId: number) => void;
   onRemoveSet: (goalId: number, setId: number) => void;
-  onUpdateSet: (
-    goalId: number,
-    setId: number,
-    newValues: Partial<Pick<SetItemType, "repsTarget" | "weight">>
-  ) => void;
-}
-
-interface SetType {
-  id: number;
-  setsNumber: number;
-  repsTarget: number;
-  weight: number;
+  onUpdateSet: (goalId: number, setId: number, newValues: SetUpdatePayload) => void;
 }
 
 interface SetItemProps {
-  set: SetType;
+  set: SetItemType;
   goalId: number;
   completed: boolean;
   onRemoveSet: (goalId: number, setId: number) => void;
-  onUpdateSet: (
-    goalId: number,
-    setId: number,
-    newValues: {
-      repsTarget?: number;
-      weight?: number;
-    }
-  ) => void;
+  onUpdateSet: (goalId: number, setId: number, newValues: SetUpdatePayload) => void;
 }

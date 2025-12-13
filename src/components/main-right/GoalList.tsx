@@ -5,7 +5,7 @@ import GoalHeader from "./GoalHeader";
 import SetList from "./SetList";
 import Buttons from "./Buttons";
 
-const mockDataGoal = [
+const mockDataGoal: GoalType[] = [
   {
     id: 1, // 운동 항목 ID
     exercise: "벤치프레스", // 운동 종목
@@ -13,8 +13,8 @@ const mockDataGoal = [
       {
         id: 1, // 세트 ID
         setsNumber: 1, // 세트 번호
-        repsTarget: 0,
-        weight: 0,
+        repsTarget: "",
+        weight: "",
       },
     ],
   },
@@ -26,15 +26,15 @@ const mockDataGoal = [
       {
         id: 1,
         setsNumber: 1,
-        repsTarget: 0,
-        weight: 0,
+        repsTarget: "",
+        weight: "",
       },
     ],
   },
 ];
 
 export default function GoalList() {
-  const [goals, setGoals] = useState(mockDataGoal);
+  const [goals, setGoals] = useState<GoalType[]>(mockDataGoal);
   const [completed, setCompleted] = useState(false);
   const idRef = useRef(3);
   const setIdRef = useRef(1);
@@ -44,15 +44,15 @@ export default function GoalList() {
   };
 
   const onCreateGoal = () => {
-    const newGoal = {
+    const newGoal: GoalType = {
       id: idRef.current++,
       exercise: "운동 종목명",
       sets: [
         {
           id: 1,
           setsNumber: 1,
-          repsTarget: 0,
-          weight: 0,
+          repsTarget: "",
+          weight: "",
         },
       ],
     };
@@ -71,8 +71,8 @@ export default function GoalList() {
                 {
                   id: setIdRef.current++,
                   setsNumber: goal.sets.length + 1,
-                  repsTarget: 0,
-                  weight: 0,
+                  repsTarget: "",
+                  weight: "",
                 },
               ],
             }
@@ -103,14 +103,7 @@ export default function GoalList() {
     );
   };
 
-  const onUpdateSet = (
-    goalId: number,
-    setId: number,
-    newValues: {
-      repsTarget?: number;
-      weight?: number;
-    }
-  ) => {
+  const onUpdateSet = (goalId: number, setId: number, newValues: SetUpdatePayload) => {
     setGoals((prev) =>
       prev.map((goal) =>
         goal.id === goalId

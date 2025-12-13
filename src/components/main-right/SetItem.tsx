@@ -18,12 +18,12 @@ export default function SetItem({
       {/* 반복 횟수 입력 */}
       <Input
         type="number"
-        className="w-16 flex-1"
+        className="w-16 flex-1 text-center"
         value={set.repsTarget}
         disabled={completed}
         onChange={(e) =>
           onUpdateSet(goalId, set.id, {
-            repsTarget: Number(e.target.value),
+            repsTarget: e.target.value === "" ? "" : Number(e.target.value),
           })
         }
       />
@@ -31,12 +31,12 @@ export default function SetItem({
       {/* 중량 입력 */}
       <Input
         type="number"
-        className="w-16 flex-1"
+        className="w-16 flex-1 text-center"
         value={set.weight}
         disabled={completed}
         onChange={(e) =>
           onUpdateSet(goalId, set.id, {
-            weight: Number(e.target.value),
+            weight: e.target.value === "" ? "" : Number(e.target.value),
           })
         }
       />
