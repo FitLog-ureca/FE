@@ -35,18 +35,37 @@ export const metadata: Metadata = {
   description: "Fitlog 메인 페이지",
 };
 
+// export default function RootLayout({ children }: { children: React.ReactNode }) {
+//   return (
+//     <html lang="ko" className={`${nanumSquare.variable}`}>
+//       <body className="bg-fitlog-50 overscroll-none">
+//         <Providers>
+//           {/* 전역 네비바 (/login, /signup 도메인 제외) */}
+//           <NavWrapper />
+
+//           {/* 페이지 내용 */}
+//           <main className="">{children}</main>
+
+//           {/* 포탈 모달 자리 */}
+//           <div id="modal-root" />
+//         </Providers>
+//       </body>
+//     </html>
+//   );
+// }
+
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="ko" className={`${nanumSquare.variable}`}>
-      <body className="bg-fitlog-50 min-h-screen overscroll-none">
+      <body className="bg-fitlog-50 overflow-hidden">
         <Providers>
-          {/* 전역 네비바 (/login, /signup 도메인 제외) */}
-          <NavWrapper />
+          {/* 전체를 세로 레이아웃으로 고정 */}
+          <div className="flex h-screen flex-col overflow-hidden">
+            <NavWrapper />
 
-          {/* 페이지 내용 */}
-          <main className="h-[calc(100vh-72px)]">{children}</main>
+            <main className="flex-1 overflow-hidden">{children}</main>
+          </div>
 
-          {/* 포탈 모달 자리 */}
           <div id="modal-root" />
         </Providers>
       </body>

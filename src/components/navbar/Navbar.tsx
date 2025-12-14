@@ -14,7 +14,7 @@ export default function Navbar() {
       </Link>
 
       {/* 오른쪽 - 유저 아이콘 */}
-      <UserIcon/>
+      <UserIcon />
     </nav>
   );
 }
