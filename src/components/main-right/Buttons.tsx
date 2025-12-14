@@ -13,6 +13,7 @@ interface ButtonsProps {
 
 export default function Buttons({ completed, onToggleCompleted, onSelectExercise }: ButtonsProps) {
   const [open, setOpen] = useState(false);
+  const [search, setSearch] = useState("");
 
   return (
     <div className="flex flex-col gap-6">
@@ -32,34 +33,57 @@ export default function Buttons({ completed, onToggleCompleted, onSelectExercise
           <PopoverContent
             side="bottom"
             align="start"
-            sideOffset={4}
+            sideOffset={-44}
             className="
     w-[var(--radix-popover-trigger-width)]
     p-1
-    rounded-lg
+    rounded-xl
     border
     shadow-md
   "
           >
+            <input
+              autoFocus
+              type="text"
+              placeholder="운동 검색"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className="
+      w-full
+      mb-2
+      px-4
+      py-2
+      text-sm
+      rounded-md
+      border
+      focus:outline-none
+      focus:ring-1
+      focus:ring-fitlog-500
+    "
+            />
+
             <ul
               className="
       flex flex-col
-      max-h-[132px]   /* 항목 3개 정도 */
+      max-h-28
       overflow-y-auto
     "
             >
-              {MOCK_EXERCISES.map((exercise) => (
+              {MOCK_EXERCISES.filter((exercise) =>
+                exercise.toLowerCase().includes(search.toLowerCase())
+              ).map((exercise) => (
                 <li
                   key={exercise}
                   onClick={() => {
                     onSelectExercise(exercise);
+                    setSearch("");
                     setOpen(false);
                   }}
                   className="
           cursor-pointer
           px-4 py-2
           text-sm
-          rounded-md
+          rounded-lg
           hover:bg-fitlog-100
         "
                 >
