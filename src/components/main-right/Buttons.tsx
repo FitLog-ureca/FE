@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import ActionButton from "../ui/ActionButton";
 import { Plus } from "lucide-react";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
@@ -14,6 +14,71 @@ interface ButtonsProps {
 export default function Buttons({ completed, onToggleCompleted, onSelectExercise }: ButtonsProps) {
   const [open, setOpen] = useState(false);
   const [search, setSearch] = useState("");
+
+  const PAGE_SIZE = 20;
+
+  const [page, setPage] = useState(0);
+  const [items, setItems] = useState<string[]>([]);
+  const [hasNext, setHasNext] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const loadMoreRef = useRef<HTMLDivElement | null>(null);
+
+  const filtered = MOCK_EXERCISES.filter((exercise) =>
+    exercise.toLowerCase().includes(search.toLowerCase())
+  );
+
+  const loadMore = (force = false) => {
+    if (isLoading) return;
+
+    setIsLoading(true);
+
+    const start = page * PAGE_SIZE;
+    const end = start + PAGE_SIZE;
+
+    const next = filtered.slice(start, end);
+
+    setItems((prev) => [...prev, ...next]);
+    setPage((prev) => prev + 1);
+
+    if (end >= filtered.length) {
+      setHasNext(false);
+    }
+    setIsLoading(false);
+  };
+
+  useEffect(() => {
+    if (!open) return;
+
+    setItems([]);
+    setPage(0);
+    setHasNext(true);
+    setIsLoading(false);
+
+    // 첫 페이지 로드
+    setTimeout(() => loadMore(true), 0);
+  }, [open, search]);
+
+  useEffect(() => {
+    if (!hasNext) return;
+    if (!loadMoreRef.current) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          loadMore();
+        }
+      },
+      {
+        root: loadMoreRef.current.parentElement,
+        threshold: 1,
+      }
+    );
+
+    observer.observe(loadMoreRef.current);
+
+    return () => observer.disconnect();
+  }, [hasNext]);
 
   return (
     <div className="flex flex-col gap-6">
@@ -69,9 +134,7 @@ export default function Buttons({ completed, onToggleCompleted, onSelectExercise
       overflow-y-auto
     "
             >
-              {MOCK_EXERCISES.filter((exercise) =>
-                exercise.toLowerCase().includes(search.toLowerCase())
-              ).map((exercise) => (
+              {items.map((exercise) => (
                 <li
                   key={exercise}
                   onClick={() => {
@@ -80,16 +143,22 @@ export default function Buttons({ completed, onToggleCompleted, onSelectExercise
                     setOpen(false);
                   }}
                   className="
-          cursor-pointer
-          px-4 py-2
-          text-sm
-          rounded-lg
-          hover:bg-fitlog-100
-        "
+        cursor-pointer
+        px-4 py-2
+        text-sm
+        rounded-lg
+        hover:bg-fitlog-100
+      "
                 >
                   {exercise}
                 </li>
               ))}
+
+              {hasNext && (
+                <div ref={loadMoreRef} className="py-2 text-center text-xs text-gray-400">
+                  불러오는 중...
+                </div>
+              )}
             </ul>
           </PopoverContent>
         </Popover>

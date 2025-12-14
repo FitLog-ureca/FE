@@ -2,7 +2,7 @@ import ActionButton from "../ui/ActionButton";
 
 export default function GoalHeader({ completed }: { completed: boolean }) {
   return (
-    <div className="flex justify-between items-center">
+    <div className="flex justify-between items-center px-2">
       <div className="flex justify-center items-center gap-4">
         <h1 className="text-xl font-semibold">
           {new Date().toLocaleString("ko-KR", {
