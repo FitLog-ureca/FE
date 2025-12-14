@@ -18,7 +18,7 @@ export default function SetItem({
       {/* 반복 횟수 입력 */}
       <Input
         type="number"
-        className="w-16 flex-1 text-center"
+        className="w-16 flex-1 text-center disabled:opacity-100 disabled:bg-white disabled:text-black disabled:cursor-default"
         value={set.repsTarget}
         disabled={completed}
         onChange={(e) =>
@@ -26,12 +26,12 @@ export default function SetItem({
             repsTarget: e.target.value === "" ? "" : Number(e.target.value),
           })
         }
-      />
+      />회
       <X className="w-4 h-4" />
       {/* 중량 입력 */}
       <Input
         type="number"
-        className="w-16 flex-1 text-center"
+        className="w-16 flex-1 text-center disabled:opacity-100 disabled:bg-white disabled:text-black disabled:cursor-default"
         value={set.weight}
         disabled={completed}
         onChange={(e) =>
@@ -39,7 +39,7 @@ export default function SetItem({
             weight: e.target.value === "" ? "" : Number(e.target.value),
           })
         }
-      />
+      />KG
 
       {/* 세트 삭제 */}
       <CloseButton onClick={() => onRemoveSet(goalId, set.id)} className="w-5 h-5" />

@@ -9,7 +9,7 @@ import ActionButton from "@/components/ui/ActionButton";
 import CloseButton from "./CloseButton";
 
 
-export default function UserIcon() {
+export default function ProfileModal() {
   return (
     <div>
       <Popover>

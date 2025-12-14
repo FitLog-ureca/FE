@@ -37,12 +37,12 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="ko">
-      <body className="min-h-screen overscroll-none bg-fitlog-50">
+      <body className="min-h-screen bg-fitlog-50">
         {/* 전역 네비바 */}
         <Navbar />
 
         {/* 페이지 내용 */}
-        <main className="h-[calc(100vh-72px)]">{children}</main>
+        <main>{children}</main>
 
         {/* 포탈 모달 자리 */}
         <div id="modal-root" />

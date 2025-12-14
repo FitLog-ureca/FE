@@ -93,8 +93,10 @@ export default function YearMonthPicker({ year, month, onSelect }: YearMonthPick
           </div>
 
           {/* X 버튼 */}
-          <button onClick={() => setOpen(false)} className="absolute top-0 -right-7 p-1">
-            <CloseButton className="w-5 h-5 text-gray-600 hover:text-fitlog-500 cursor-pointer" />
+          <button onClick={() => setOpen(false)} className="absolute top-0 -right-8 p-1">
+            <span className="w-5 h-5 text-gray-600 hover:text-fitlog-500 cursor-pointer">
+              <X />
+            </span>
           </button>
         </div>
       </PopoverContent>
