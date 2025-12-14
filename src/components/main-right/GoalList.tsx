@@ -43,13 +43,13 @@ export default function GoalList() {
     setCompleted(!completed);
   };
 
-  const onCreateGoal = () => {
+  const onCreateGoal = (exerciseName: string) => {
     const newGoal: GoalType = {
       id: idRef.current++,
-      exercise: "운동 종목명",
+      exercise: exerciseName,
       sets: [
         {
-          id: 1,
+          id: setIdRef.current++,
           setsNumber: 1,
           repsTarget: "",
           weight: "",
@@ -138,7 +138,7 @@ export default function GoalList() {
       <Buttons
         completed={completed}
         onToggleCompleted={onToggleCompleted}
-        onCreateGoal={onCreateGoal}
+        onSelectExercise={onCreateGoal}
       />
     </div>
   );
