@@ -3,7 +3,8 @@
 import React, { useRef, useState } from "react";
 import GoalHeader from "./GoalHeader";
 import SetList from "./SetList";
-import Buttons from "./Buttons";
+import ExercisesDropdownButton from "./ExercisesDropdownButton";
+import { GoalType, SetUpdatePayload } from "@/types/todoMain";
 
 const mockDataGoal: GoalType[] = [
   {
@@ -135,7 +136,7 @@ export default function GoalList() {
       ))}
 
       {/* 버튼 렌더링 */}
-      <Buttons
+      <ExercisesDropdownButton
         completed={completed}
         onToggleCompleted={onToggleCompleted}
         onSelectExercise={onCreateGoal}

@@ -1,7 +1,7 @@
 import React from "react";
 import Input from "../ui/Input";
 import { X } from "lucide-react";
-import CloseButton from "../ui/CloseButton";
+import CloseButton from "@/components/ui/CloseButton";
 
 export default function SetItem({
   set,

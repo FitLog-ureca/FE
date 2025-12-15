@@ -1,8 +1,9 @@
 import React from "react";
-import ActionButton from "../ui/ActionButton";
+import ActionButton from "@/components/ui/ActionButton";
 import { Plus } from "lucide-react";
 import SetItem from "./SetItem";
-import CloseButton from "../ui/CloseButton";
+import CloseButton from "@/components/ui/CloseButton";
+import { SetListProps } from "@/types/todoMain";
 
 export default function SetList({
   goal, // 해당 운동 SetList

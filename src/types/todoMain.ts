@@ -1,19 +1,19 @@
-interface GoalType {
+export interface GoalType {
   id: number;
   exercise: string | null;
   sets: SetItemType[];
 }
 
-interface SetItemType {
+export interface SetItemType {
   id: number;
   setsNumber: number;
   repsTarget: number | "";
   weight: number | "";
 }
 
-type SetUpdatePayload = Partial<Pick<SetItemType, "repsTarget" | "weight">>;
+export type SetUpdatePayload = Partial<Pick<SetItemType, "repsTarget" | "weight">>;
 
-interface SetListProps {
+export interface SetListProps {
   goal: GoalType;
   completed: boolean;
   onCreateSet: (goalId: number) => void;
@@ -22,7 +22,7 @@ interface SetListProps {
   onUpdateSet: (goalId: number, setId: number, newValues: SetUpdatePayload) => void;
 }
 
-interface SetItemProps {
+export interface SetItemProps {
   set: SetItemType;
   goalId: number;
   completed: boolean;

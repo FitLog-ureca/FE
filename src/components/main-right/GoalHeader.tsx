@@ -1,4 +1,4 @@
-import ActionButton from "../ui/ActionButton";
+import ActionButton from "@/components/ui/ActionButton";
 
 export default function GoalHeader({ completed }: { completed: boolean }) {
   return (

@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover";
 import { X } from "lucide-react";
 import { cn } from "@/lib/cn";
-import CloseButton from "../ui/CloseButton";
+import CloseButton from "@/components/ui/CloseButton";
 
 interface YearMonthPickerProps {
   year: number;
