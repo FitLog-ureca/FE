@@ -1,16 +1,15 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import ActionButton from "@/components/ui/ActionButton";
 import { Plus } from "lucide-react";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Exercise } from "@/types/todoMain";
 
-const MOCK_EXERCISES = [
-  { id: 1, name: "벤치프레스" },
-  { id: 2, name: "스쿼트" },
-  { id: 3, name: "데드리프트" },
-  { id: 4, name: "숄더리프트" },
-  { id: 5, name: "랫풀다운" },
-];
+const BASE_EXERCISES = ["벤치프레스", "스쿼트", "데드리프트", "숄더프레스", "랫풀다운"];
+
+const MOCK_EXERCISES: Exercise[] = Array.from({ length: 100 }, (_, i) => ({
+  id: i + 1,
+  name: `${BASE_EXERCISES[i % BASE_EXERCISES.length]} ${Math.floor(i / BASE_EXERCISES.length) + 1}`,
+}));
 
 interface ExercisesDropdownButtonProps {
   completed: boolean;
@@ -25,108 +24,41 @@ export default function ExercisesDropdownButton({
 }: ExercisesDropdownButtonProps) {
   const [open, setOpen] = useState<boolean>(false);
   const [search, setSearch] = useState<string>("");
-
-  const PAGE_SIZE = 20;
-
-  const [page, setPage] = useState<number>(0);
-  const [items, setItems] = useState<Exercise[]>([]);
-  const [hasNext, setHasNext] = useState<boolean>(true);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-
   const [debouncedSearch, setDebouncedSearch] = useState<string>("");
 
-  const loadMoreRef = useRef<HTMLDivElement | null>(null);
-
-  /* TanStack Query 사용 시 필요할 수 있어서 삭제 보류 */
-  // const resetPagination = () => {
-  //   setItems([]);
-  //   setPage(0);
-  //   setHasNext(true);
-  //   setIsLoading(false);
-  // };
+  const PAGE_SIZE = 20;
 
   const getFilteredExercises = (keyword: string) =>
     MOCK_EXERCISES.filter((exercise) =>
       exercise.name.toLowerCase().includes(keyword.toLowerCase())
     );
 
-  const initializePagination = (keyword: string) => {
-    const filtered = getFilteredExercises(keyword);
-    const firstPage = filtered.slice(0, PAGE_SIZE);
+  // const initializePagination = (keyword: string) => {
+  //   isLoadingRef.current = false;
 
-    setItems(firstPage);
-    setPage(1);
-    setHasNext(firstPage.length === PAGE_SIZE);
-  };
+  //   const filtered = getFilteredExercises(keyword);
+  //   const firstPage = filtered.slice(0, PAGE_SIZE);
 
-  const loadNextPage = () => {
-    if (isLoading || !hasNext) return;
+  //   setItems(firstPage);
+  //   setHasNext(filtered.length > PAGE_SIZE);
+  // };
 
-    setIsLoading(true);
-
-    const filtered = getFilteredExercises(debouncedSearch);
-
-    const start = page * PAGE_SIZE;
-    const end = start + PAGE_SIZE;
-
-    const nextItems = filtered.slice(start, end);
-
-    setItems((prev) => [...prev, ...nextItems]);
-    setPage((prev) => prev + 1);
-
-    if (end >= filtered.length) {
-      setHasNext(false);
-    }
-
-    setIsLoading(false);
-  };
-
-  useEffect(() => {
-    if (!loadMoreRef.current || !hasNext) return;
-
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          loadNextPage();
-        }
-      },
-      {
-        root: loadMoreRef.current.parentElement,
-        threshold: 1,
-      }
-    );
-
-    observer.observe(loadMoreRef.current);
-
-    return () => observer.disconnect();
-  }, [hasNext, page, debouncedSearch]);
-
+  // debounce
   useEffect(() => {
     const timer = setTimeout(() => {
       setDebouncedSearch(search);
-
-      if (open) {
-        initializePagination(search);
-      }
     }, 300);
 
     return () => clearTimeout(timer);
-  }, [search, open]);
+  }, [search]);
+
+  const items = open ? getFilteredExercises(debouncedSearch).slice(0, PAGE_SIZE) : [];
 
   return (
     <div className="flex flex-col gap-6">
       {/* 운동 종목 선택 버튼 */}
       {!completed && (
-        <Popover
-          open={open}
-          onOpenChange={(nextOpen) => {
-            setOpen(nextOpen);
-
-            if (nextOpen) {
-              initializePagination(debouncedSearch);
-            }
-          }}
-        >
+        <Popover open={open} onOpenChange={setOpen}>
           <PopoverTrigger asChild>
             <ActionButton
               className="w-full p-2 flex justify-center items-center gap-2 text-md"
@@ -148,14 +80,11 @@ export default function ExercisesDropdownButton({
               type="text"
               placeholder="운동 검색"
               value={search}
-              onChange={(e) => {
-                const value = e.target.value;
-                setSearch(value);
-              }}
+              onChange={(e) => setSearch(e.target.value)}
               className="w-full mb-2 px-4 py-2 text-sm rounded-md border focus:outline-none focus:ring-1 focus:ring-fitlog-500"
             />
 
-            <ul className="flex flex-col max-h-28 overflow-y-auto">
+            <ul className="flex flex-col max-h-96 overflow-y-auto">
               {items.map((exercise) => (
                 <li
                   key={exercise.id}
@@ -170,10 +99,8 @@ export default function ExercisesDropdownButton({
                 </li>
               ))}
 
-              {hasNext && (
-                <div ref={loadMoreRef} className="py-2 text-center text-xs text-gray-400">
-                  불러오는 중...
-                </div>
+              {items.length === 0 && (
+                <li className="py-3 text-center text-xs text-gray-400">검색 결과가 없습니다</li>
               )}
             </ul>
           </PopoverContent>
