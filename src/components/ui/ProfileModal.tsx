@@ -11,8 +11,9 @@ import greeting from "@/assets/images/greeting.png";
 import { PopoverClose } from "@radix-ui/react-popover";
 import ActionButton from "@/components/ui/ActionButton";
 import { useLogout } from "@/lib/tanstack/mutation/logout";
+import CloseButton from "@/components/ui/CloseButton";
 
-export default function UserIcon() {
+export default function ProfileModal() {
   const { mutate: logout, isPending } = useLogout();
 
   return (
@@ -35,7 +36,7 @@ export default function UserIcon() {
           <header className="flex justify-between items-center">
             <p className="font-bold text-md text-gray-600">프로필</p>
             <PopoverClose asChild>
-              <X className="w-5 h-5 text-gray-600 cursor-pointer hover:text-fitlog-500" />
+              <CloseButton />
             </PopoverClose>
           </header>
           <main className="flex flex-col items-center">

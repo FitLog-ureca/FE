@@ -3,8 +3,8 @@
 import { useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { cn } from "@/lib/cn";
-import YearMonthPicker from "@/components/main/YearMonthPicker";
-import CalendarCell from "@/components/main/CalendarCell";
+import YearMonthPicker from "@/components/main-left/YearMonthPicker";
+import CalendarCell from "@/components/main-left/CalendarCell";
 
 // 운동 강도 Mock 데이터
 export const workoutIntensity: Record<string, number> = {

@@ -1,7 +1,7 @@
 "use client";
 
 import { cn } from "@/lib/cn";
-import { workoutIntensity } from "@/components/main/Calendar";
+import { workoutIntensity } from "@/components/main-left/Calendar";
 
 interface CalendarCellProps {
   date: Date;
