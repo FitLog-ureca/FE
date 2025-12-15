@@ -29,3 +29,8 @@ export interface SetItemProps {
   onRemoveSet: (goalId: number, setId: number) => void;
   onUpdateSet: (goalId: number, setId: number, newValues: SetUpdatePayload) => void;
 }
+
+export type Exercise = {
+  id: number;
+  name: string;
+};
