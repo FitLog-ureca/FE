@@ -36,6 +36,16 @@ apiClient.interceptors.response.use(
     if (error.response?.status !== 401 || !originalRequest) {
       return Promise.reject(error);
     }
+    // 로그아웃 중에는 토큰 재발급 로직 시도하지 못하게 처리
+    const isLogoutCall =
+      typeof originalRequest.url === "string" &&
+      originalRequest.url.includes("/auth/logout");
+
+    if (isLogoutCall) {
+      tokenStore.clear();
+      authEvents.emitLogout();
+      return Promise.reject(error);
+    }
 
     // refresh 요청 자체가 401이면 -> 로그아웃 처리
     const isRefreshCall =
