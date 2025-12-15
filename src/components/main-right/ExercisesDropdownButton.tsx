@@ -33,6 +33,8 @@ export default function ExercisesDropdownButton({
   const [hasNext, setHasNext] = useState<boolean>(true);
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
+  const [debouncedSearch, setDebouncedSearch] = useState<string>("");
+
   const loadMoreRef = useRef<HTMLDivElement | null>(null);
 
   /* TanStack Query 사용 시 필요할 수 있어서 삭제 보류 */
@@ -44,7 +46,9 @@ export default function ExercisesDropdownButton({
   // };
 
   const getFilteredExercises = (keyword: string) =>
-    MOCK_EXERCISES.filter((exercise) => exercise.name.toLowerCase().includes(keyword.toLowerCase()));
+    MOCK_EXERCISES.filter((exercise) =>
+      exercise.name.toLowerCase().includes(keyword.toLowerCase())
+    );
 
   const initializePagination = (keyword: string) => {
     const filtered = getFilteredExercises(keyword);
@@ -60,7 +64,7 @@ export default function ExercisesDropdownButton({
 
     setIsLoading(true);
 
-    const filtered = getFilteredExercises(search);
+    const filtered = getFilteredExercises(debouncedSearch);
 
     const start = page * PAGE_SIZE;
     const end = start + PAGE_SIZE;
@@ -95,7 +99,19 @@ export default function ExercisesDropdownButton({
     observer.observe(loadMoreRef.current);
 
     return () => observer.disconnect();
-  }, [hasNext, page, search]);
+  }, [hasNext, page, debouncedSearch]);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedSearch(search);
+
+      if (open) {
+        initializePagination(search);
+      }
+    }, 300);
+
+    return () => clearTimeout(timer);
+  }, [search, open]);
 
   return (
     <div className="flex flex-col gap-6">
@@ -107,7 +123,7 @@ export default function ExercisesDropdownButton({
             setOpen(nextOpen);
 
             if (nextOpen) {
-              initializePagination(search);
+              initializePagination(debouncedSearch);
             }
           }}
         >
@@ -135,7 +151,6 @@ export default function ExercisesDropdownButton({
               onChange={(e) => {
                 const value = e.target.value;
                 setSearch(value);
-                initializePagination(value);
               }}
               className="w-full mb-2 px-4 py-2 text-sm rounded-md border focus:outline-none focus:ring-1 focus:ring-fitlog-500"
             />
