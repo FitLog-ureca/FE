@@ -37,23 +37,24 @@ export default function TodoSetRow({
     <div className="flex flex-row gap-3 justify-center items-center">
       <Checkbox checked={isCompleted} onChange={handleCompleted} />
       <p className="font-bold w-12">Set {setNumber}</p>
-
       <Input
         disabled={isCompleted}
-        className="w-31 h-9 rounded-xl px-3 shadow-fitlog-btn-sm"
-        placeholder="10회"
+        className="w-23 h-9 rounded-xl px-3 shadow-fitlog-btn-sm"
+        placeholder="10"
       />
+      회
       <Input
         disabled={isCompleted}
-        className="w-31 h-9 rounded-xl px-3 shadow-fitlog-btn-sm"
-        placeholder="0kg"
+        className="w-23 h-9 rounded-xl px-3 shadow-fitlog-btn-sm"
+        placeholder="0"
       />
+      kg
       <Input
         disabled={isCompleted}
-        className="w-19 h-9 rounded-xl px-3 text-center shadow-fitlog-btn-sm"
+        className="w-15 h-9 rounded-xl px-3 text-center shadow-fitlog-btn-sm"
         placeholder="-"
       />
-
+      초
       <ActionButton
         onClick={handleStartResting}
         disabled={!isCompleted || isResting}
