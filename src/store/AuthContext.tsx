@@ -1,7 +1,16 @@
 "use client";
 
-import { createContext, useContext, useState, ReactNode } from "react";
+import {
+  createContext,
+  useContext,
+  useState,
+  ReactNode,
+  useEffect,
+} from "react";
 import { tokenStore } from "@/store/tokenStore";
+import { authEvents } from "@/store/authEvents";
+import { useRouter } from "next/navigation";
+import { useQueryClient } from "@tanstack/react-query";
 
 type User = { loginId: string; name: string };
 
@@ -18,6 +27,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [accessToken, setAccessToken] = useState<string | null>(null);
   const [user, setUser] = useState<User | null>(null);
 
+  const router = useRouter();
+  const queryClient = useQueryClient();
+
   const setAuth = (token: string, userData: User | null) => {
     tokenStore.set(token);
     setAccessToken(token);
@@ -29,6 +41,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setAccessToken(null);
     setUser(null);
   };
+
+  useEffect(() => {
+    authEvents.setLogoutListener(() => {
+      clearAuth();
+      queryClient.clear();
+      router.replace("/login");
+    });
+  }, [queryClient, router]);
 
   return (
     <AuthContext.Provider value={{ accessToken, user, setAuth, clearAuth }}>
