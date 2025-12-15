@@ -1,18 +1,22 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useTransition } from "react";
 import Input from "@/components/ui/Input";
 import { Eye, EyeOff } from "lucide-react";
 import ActionButton from "@/components/ui/ActionButton";
 import FitlogLogo from "@/components/ui/FitLogLogo";
 import useSignUp from "@/hooks/useSignUp";
 import signupAction from "@/actions/auth/SignUpServerAction";
+import { useRouter } from "next/navigation";
 
 export default function SignUpForm() {
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [showConfirmPassword, setShowConfirmPassword] =
     useState<boolean>(false);
+  const [isPending, startTransition] = useTransition();
+  const [error, setError] = useState<string>("");
+  const router = useRouter();
 
   const {
     signupFormData,
@@ -24,14 +28,27 @@ export default function SignUpForm() {
   } = useSignUp();
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    if (!isFormValid) {
-      e.preventDefault();
-    }
-    console.log("회원가입 성공", signupFormData);
+    e.preventDefault();
+    setError("");
+
+    if (!isFormValid) return;
+
+    const formData = new FormData(e.currentTarget);
+
+    startTransition(async () => {
+      const result = await signupAction(formData);
+
+      if (!result.success) {
+        setError(result.message || "회원가입에 실패했습니다.");
+        return;
+      }
+
+      router.push("/login");
+    });
   };
 
   return (
-    <form action={signupAction} onSubmit={handleSubmit}>
+    <form onSubmit={handleSubmit}>
       <div className="flex h-194 w-96 flex-col items-center rounded-xl bg-white border-fitlog-beige border shadow-fitlog-form">
         <div className="flex flex-row items-center justify-center py-14">
           <FitlogLogo size={48} />
@@ -136,8 +153,12 @@ export default function SignUpForm() {
           )}
         </div>
         <div className="mt-7 flex w-full flex-col px-8">
-          <ActionButton className="px-3 py-2.5" type="submit">
-            회원가입
+          <ActionButton
+            disabled={isPending}
+            className="px-3 py-2.5"
+            type="submit"
+          >
+            {isPending ? "회원가입 중..." : "회원가입"}
           </ActionButton>
           <div className="mt-5 flex flex-row justify-center text-sm">
             <p>이미 계정이 있으신가요?</p>
