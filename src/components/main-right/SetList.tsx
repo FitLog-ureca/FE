@@ -1,7 +1,7 @@
 import React from "react";
 import ActionButton from "@/components/ui/ActionButton";
 import { Plus } from "lucide-react";
-import SetItem from "./SetItem";
+import SetItem from "@/components/main-right/SetItem";
 import CloseButton from "@/components/ui/CloseButton";
 import { SetListProps } from "@/types/todoMain";
 

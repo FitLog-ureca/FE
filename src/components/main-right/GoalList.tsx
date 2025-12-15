@@ -1,9 +1,9 @@
 "use client";
 
 import React, { useRef, useState } from "react";
-import GoalHeader from "./GoalHeader";
-import SetList from "./SetList";
-import ExercisesDropdownButton from "./ExercisesDropdownButton";
+import GoalHeader from "@/components/main-right/GoalHeader";
+import SetList from "@/components/main-right/SetList";
+import ExercisesDropdownButton from "@/components/main-right/ExercisesDropdownButton";
 import { GoalType, SetUpdatePayload } from "@/types/todoMain";
 
 const mockDataGoal: GoalType[] = [

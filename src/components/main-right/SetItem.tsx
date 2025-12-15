@@ -1,5 +1,5 @@
 import React from "react";
-import Input from "../ui/Input";
+import Input from "@/components/ui/Input";
 import { X } from "lucide-react";
 import CloseButton from "@/components/ui/CloseButton";
 import { SetItemProps } from "@/types/todoMain";

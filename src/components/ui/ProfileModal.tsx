@@ -6,7 +6,7 @@ import Image from "next/image";
 import greeting from "@/assets/images/greeting.png";
 import { PopoverClose } from "@radix-ui/react-popover";
 import ActionButton from "@/components/ui/ActionButton";
-import CloseButton from "./CloseButton";
+import CloseButton from "@/components/ui/CloseButton";
 
 
 export default function ProfileModal() {
