@@ -13,7 +13,7 @@ export default function SetItem({
   return (
     <div className="flex justify-between items-center gap-4 pb-2">
       {/* 세트 번호 */}
-      <h2 className="font-bold text-md w-10">Set{set.setsNumber}</h2>
+      <h2 className="font-bold text-md w-10">Set {set.setsNumber}</h2>
       {/* 반복 횟수 입력 */}
       <Input
         type="number"
