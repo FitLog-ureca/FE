@@ -5,6 +5,7 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import { cn } from "@/lib/cn";
 import YearMonthPicker from "@/components/main-left/YearMonthPicker";
 import CalendarCell from "@/components/main-left/CalendarCell";
+import { CalendarProps } from "@/types/calendar";
 
 // 운동 강도 Mock 데이터
 export const workoutIntensity: Record<string, number> = {
@@ -17,11 +18,6 @@ export const workoutIntensity: Record<string, number> = {
   "2025-12-06": 3,
   "2025-12-07": 1,
   "2025-12-09": 3,
-};
-
-type CalendarProps = {
-  className?: string;
-  onSelectDate?: (date: string) => void;
 };
 
 export function Calendar({ className, onSelectDate }: CalendarProps) {
