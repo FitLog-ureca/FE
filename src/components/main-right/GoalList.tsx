@@ -88,19 +88,27 @@ export default function GoalList() {
 
   const onRemoveSet = (goalId: number, setId: number) => {
     setGoals((prev) =>
-      prev.map((goal) =>
-        goal.id === goalId
-          ? {
-              ...goal,
-              sets: goal.sets
-                .filter((set) => set.id !== setId)
-                .map((set, index) => ({
-                  ...set,
-                  setsNumber: index + 1,
-                })),
-            }
-          : goal
-      )
+      prev.flatMap((goal) => {
+        if (goal.id !== goalId) return goal;
+
+        // 세트가 1개뿐이면 → 운동(goal) 자체 삭제
+        if (goal.sets.length === 1) {
+          return [];
+        }
+
+        // 세트가 여러 개면 → 해당 세트만 삭제 + 번호 재정렬
+        const newSets = goal.sets
+          .filter((set) => set.id !== setId)
+          .map((set, index) => ({
+            ...set,
+            setsNumber: index + 1,
+          }));
+
+        return {
+          ...goal,
+          sets: newSets,
+        };
+      })
     );
   };
 
