@@ -37,23 +37,44 @@ export default function TodoSetRow({
     <div className="flex flex-row gap-3 justify-center items-center">
       <Checkbox checked={isCompleted} onChange={handleCompleted} />
       <p className="font-bold w-12">Set {setNumber}</p>
-      <Input
-        disabled={isCompleted}
-        className="w-23 h-9 rounded-xl px-3 shadow-fitlog-btn-sm"
-        placeholder="10"
-      />
+      <div
+        className={`w-23 h-9 px-3 text-sm rounded-xl border shadow-fitlog-btn-sm
+    flex items-center justify-center
+    ${
+      isCompleted
+        ? "border-fitlog-beige bg-[#EEEEEE] text-gray-400 cursor-auto"
+        : "border-fitlog-beige text-fitlog-text"
+    }
+  `}
+      >
+        10
+      </div>
       회
-      <Input
-        disabled={isCompleted}
-        className="w-23 h-9 rounded-xl px-3 shadow-fitlog-btn-sm"
-        placeholder="0"
-      />
+      <div
+        className={`w-23 h-9 px-3 text-sm rounded-xl border shadow-fitlog-btn-sm
+    flex items-center justify-center
+    ${
+      isCompleted
+        ? "border-fitlog-beige bg-[#EEEEEE] text-gray-400 cursor-auto"
+        : "border-fitlog-beige text-fitlog-text"
+    }
+  `}
+      >
+        0
+      </div>
       kg
-      <Input
-        disabled={isCompleted}
-        className="w-15 h-9 rounded-xl px-3 text-center shadow-fitlog-btn-sm"
-        placeholder="-"
-      />
+      <div
+        className={`w-15 h-9 px-3 text-sm rounded-xl border shadow-fitlog-btn-sm
+          flex items-center justify-center
+          ${
+            isCompleted
+              ? "border-fitlog-beige bg-[#EEEEEE] text-gray-400 cursor-auto"
+              : "border-fitlog-beige text-fitlog-text"
+          }
+        `}
+      >
+        -
+      </div>
       초
       <ActionButton
         onClick={handleStartResting}
@@ -61,10 +82,10 @@ export default function TodoSetRow({
         className={`flex items-center justify-center w-17 h-9 rounded-xl shadow-fitlog-btn-sm
           ${
             isResting
-              ? "bg-fitlog-500 text-white cursor-default"
+              ? "bg-fitlog-500 text-white hover:bg-fitlog-500 cursor-auto"
               : "bg-white border border-fitlog-500/60 text-fitlog-500 hover:bg-fitlog-100"
           }
-          ${!isCompleted ? "" : ""}
+          ${!isCompleted ? "cursor-not-allowed  hover:bg-white! " : ""}
         `}
       >
         휴식
