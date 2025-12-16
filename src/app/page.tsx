@@ -1,4 +1,4 @@
-"use client";
+"server-only";
 
 import MainClient from "@/components/main/MainClient";
 
