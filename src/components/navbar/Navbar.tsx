@@ -1,4 +1,4 @@
-"use client";
+"server-only";
 
 import FitLogLogo from "@/components/ui/FitLogLogo";
 import Link from "next/link";
