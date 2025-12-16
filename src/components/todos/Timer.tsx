@@ -69,7 +69,7 @@ export default function Timer() {
   };
 
   return (
-    <div className="static lg:fixed lg:top-60">
+    <div className="static lg:fixed lg:top-1/2 lg:-translate-y-1/2">
       <div className="flex h-89 items-center rounded-xl border border-fitlog-beige bg-white p-10">
         <div className="w-114">
           <div className="rounded-xl bg-gray-100 py-14 text-center">
@@ -107,7 +107,7 @@ export default function Timer() {
             </ActionButton>
             <ActionButton
               onClick={handleReset}
-              disabled={!isActive}
+              // disabled={!isActive}
               className="flex w-full items-center justify-center py-2.5 bg-white border border-fitlog-beige text-fitlog-text shadow-fitlog-btn-sm hover:bg-[#F1F1F1] disabled:bg-fitlog-disabled disabled:cursor-not-allowed disabled:text-white"
             >
               <RotateCcw className="mr-2 h-4 w-4" />
