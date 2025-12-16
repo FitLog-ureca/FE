@@ -73,7 +73,7 @@ export default function ExercisesDropdownButton({
             side="bottom"
             align="start"
             sideOffset={-44}
-            className="w-[var(--radix-popover-trigger-width)] p-1 rounded-xl border shadow-md"
+            className="w-[var(--radix-popover-trigger-width)] p-1 rounded-xl border border-fitlog-beige shadow-md"
           >
             <input
               autoFocus
@@ -81,10 +81,10 @@ export default function ExercisesDropdownButton({
               placeholder="운동 검색"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="w-full mb-2 px-4 py-2 text-sm rounded-md border focus:outline-none focus:ring-1 focus:ring-fitlog-500"
+              className="w-full mb-2 px-4 py-2 text-sm rounded-md border border-fitlog-beige focus:outline-none focus:border-fitlog-500"
             />
 
-            <ul className="flex flex-col max-h-96 overflow-y-auto">
+            <ul className="flex flex-col max-h-64 overflow-y-auto">
               {items.map((exercise) => (
                 <li
                   key={exercise.id}

@@ -23,7 +23,7 @@ export default function ActionButton({
         // variant에 따른 스타일
         variant === "primary" && "bg-fitlog-500 text-white hover:bg-fitlog-700",
         variant === "secondary" &&
-          "bg-white text-black border border-gray-300 hover:bg-gray-100",
+          "bg-white text-black border border-fitlog-beige hover:bg-gray-100",
         disabled && "bg-fitlog-700 text-gray-300 cursor-not-allowed",
 
         error && "bg-red-400 hover:bg-red-500 text-white",

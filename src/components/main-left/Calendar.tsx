@@ -105,7 +105,7 @@ export function Calendar({ className, onSelectDate }: CalendarProps) {
   const weekDays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
   return (
-    <div className={cn("w-full rounded-xl bg-white p-6 shadow border border-gray-200", className)}>
+    <div className={cn("w-full rounded-xl bg-white p-6 shadow border border-fitlog-beige", className)}>
       {/* 상단 월 이동 */}
       <div className="mb-5 flex items-center justify-between">
         <button

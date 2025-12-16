@@ -1,7 +1,7 @@
 const FillLevel = ({ className }: { className?: string }) => {
   return (
     <section className={className}>
-      <div className="bg-card border border-border rounded-2xl p-4 shadow">
+      <div className="bg-card border border-fitlog-beige rounded-2xl p-4 shadow">
         <h3 className="text-lg font-semibold mb-3">활동 수준</h3>
         
         <div className="flex items-center gap-3 flex-wrap text-sm">
