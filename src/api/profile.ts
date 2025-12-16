@@ -16,22 +16,18 @@ export async function updateProfileApi({
   profileImage,
 }: UpdateProfileParams): Promise<Profile> {
   const formData = new FormData();
+  if (payload.username) {
+    formData.append("username", payload.username);
+  }
+  if (payload.birthDate) {
+    formData.append("birthDate", payload.birthDate);
+  }
+  if (payload.bio) {
+    formData.append("bio", payload.bio);
+  }
 
-  // JSON 데이터를 Blob으로 변환하여 추가
-  const profileBlob = new Blob(
-    [
-      JSON.stringify({
-        username: payload.username,
-        birthDate: payload.birthDate,
-        bio: payload.bio,
-      }),
-    ],
-    { type: "application/json" }
-  );
-  formData.append("profile", profileBlob);
-
+  // 이미지 처리
   if (profileImage === null) {
-    // 삭제를 위해 빈 Blob 전송하지 않음
   } else if (profileImage) {
     formData.append("profileImage", profileImage);
   }
