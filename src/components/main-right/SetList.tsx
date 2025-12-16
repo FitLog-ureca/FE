@@ -36,7 +36,7 @@ export default function SetList({
 
         {!completed && (
           <ActionButton
-            className="w-full p-2 flex justify-center items-center gap-2 text-md"
+            className="w-full p-2 flex justify-center items-center gap-2 text-md shadow-fitlog-btn-sm"
             variant="secondary"
             onClick={() => onCreateSet(goal.id)}
           >
