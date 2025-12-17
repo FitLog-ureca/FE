@@ -1,6 +1,6 @@
 "use client";
 
-import { Camera, LogOut, Play, User } from "lucide-react";
+import { Camera, LogOut, Play, User, X } from "lucide-react";
 import {
   Popover,
   PopoverContent,
@@ -12,28 +12,50 @@ import { PopoverClose } from "@radix-ui/react-popover";
 import ActionButton from "@/components/ui/ActionButton";
 import { useLogout } from "@/lib/tanstack/mutation/logout";
 import CloseButton from "@/components/ui/CloseButton";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Input from "@/components/ui/Input";
 import { Profile } from "@/types/profile";
-
-const mockData = {
-  name: "박준형",
-  age: 28,
-  bio: "테스트",
-  profileImage: "text",
-  birthDate: "2025-12-15",
-};
+import { useGetProfile } from "@/lib/tanstack/query/profile";
+import { useUpdateProfile } from "@/lib/tanstack/mutation/profile";
 
 export default function ProfileModal() {
-  const { mutate: logout, isPending } = useLogout();
+  const { mutate: logout, isPending: isLogoutPending } = useLogout();
+  const { data: profileData, isLoading } = useGetProfile();
+  const { mutateAsync: updateProfile, isPending: isUpdateProfilePending } =
+    useUpdateProfile();
 
   const [isEditing, setIsEditing] = useState<boolean>(false);
-  const [profile, setProfile] = useState<Profile>(mockData);
+  const [editProfile, setEditProfile] = useState<Profile | null>(null);
   const [profileImage, setProfileImage] = useState<string | null>(null);
+  const [profileImageFile, setProfileImageFile] = useState<File | null>(null);
+  const [isProfileImageReset, setIsProfileImageReset] =
+    useState<boolean>(false);
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
+      // 파일 크기 체크 (5MB)
+      if (file.size > 5 * 1024 * 1024) {
+        alert("파일 크기는 5MB 이하여야 합니다.");
+        return;
+      }
+
+      // 파일 타입 체크
+      const allowedTypes = [
+        "image/jpeg",
+        "image/png",
+        "image/jpg",
+        "image/webp",
+      ];
+      if (!allowedTypes.includes(file.type)) {
+        alert("JPEG, PNG, JPG, WEBP 형식의 이미지만 업로드 가능합니다.");
+        return;
+      }
+
+      setProfileImageFile(file);
+      setIsProfileImageReset(false);
+
+      // 미리보기를 위한 Data URL 생성
       const reader = new FileReader();
       reader.onloadend = () => {
         setProfileImage(reader.result as string);
@@ -44,13 +66,54 @@ export default function ProfileModal() {
 
   const handleCancleProfile = () => {
     setIsEditing(false);
-    setProfile(mockData);
-    setProfileImage(null);
+    if (profileData) {
+      setEditProfile(profileData);
+      setProfileImage(profileData?.profileImage ?? null);
+      setProfileImageFile(null);
+    }
   };
 
-  const handleSaveProfile = () => {
-    setIsEditing(false);
-    console.log("저장", profile);
+  const handleSaveProfile = async () => {
+    if (!editProfile) return;
+
+    try {
+      await updateProfile({
+        payload: {
+          username: editProfile.username,
+          birthDate: editProfile.birthDate,
+          bio: editProfile.bio,
+        },
+        profileImage: isProfileImageReset ? null : profileImageFile,
+      });
+
+      setIsEditing(false);
+      setIsProfileImageReset(false);
+    } catch (error) {
+      alert("이름은 필수입니다.");
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    if (profileData) {
+      setEditProfile(profileData);
+
+      const img = profileData.profileImage;
+      setProfileImage(
+        img && (img.startsWith("http") || img.startsWith("data:")) ? img : null
+      );
+      setProfileImageFile(null);
+    }
+  }, [profileData]);
+
+  if (isLoading || !editProfile) {
+    return null;
+  }
+
+  const handleImageDelete = () => {
+    setProfileImage(null);
+    setProfileImageFile(null);
+    setIsProfileImageReset(true);
   };
 
   return (
@@ -58,10 +121,19 @@ export default function ProfileModal() {
       <Popover>
         <PopoverTrigger asChild>
           <button
-            className="p-1 border-2 border-gray-600 rounded-full hover:opacity-60 transition cursor-pointer flex items-center justify-center"
+            className="relative w-8 h-8 rounded-full overflow-hidden border-2 border-gray-600 hover:opacity-60 transition cursor-pointer flex items-center justify-center"
             aria-label="user menu"
           >
-            <User className="w-6 h-6 text-gray-600" />
+            {profileImage ? (
+              <Image
+                src={profileImage}
+                alt="프로필 사진"
+                fill
+                className="object-cover"
+              />
+            ) : (
+              <User className="w-6 h-6 text-gray-600" />
+            )}
           </button>
         </PopoverTrigger>
         <PopoverContent
@@ -73,7 +145,7 @@ export default function ProfileModal() {
           <header className="flex justify-between items-center">
             <p className="font-bold text-md text-gray-600">프로필</p>
             <PopoverClose asChild>
-              <CloseButton />
+              <CloseButton onClick={() => setIsEditing(false)} />
             </PopoverClose>
           </header>
           <main className="flex flex-col w-full">
@@ -92,7 +164,7 @@ export default function ProfileModal() {
                     <input
                       id="profile-image"
                       type="file"
-                      accept="image/*"
+                      accept="image/jpeg,image/png,image/jpg,image/webp"
                       onChange={handleImageChange}
                       className="hidden"
                     />
@@ -102,6 +174,15 @@ export default function ProfileModal() {
                     >
                       <Camera className="h-4 w-4" />
                     </label>
+                    {profileImage && (
+                      <button
+                        onClick={handleImageDelete}
+                        className="absolute -bottom-1 -left-1 flex h-8 w-8 cursor-pointer items-center justify-center rounded-full bg-fitlog-500 text-white hover:bg-fitlog-600"
+                        aria-label="이미지 삭제"
+                      >
+                        <X className="h-4 w-4" />
+                      </button>
+                    )}
                   </>
                 )}
               </div>
@@ -113,41 +194,42 @@ export default function ProfileModal() {
                 <p
                   className={`text-xs ${isEditing ? "text-fitlog-text" : "text-gray-400"}`}
                 >
-                  이름
+                  {isEditing ? "이름 *" : "이름"}
                 </p>
                 {isEditing ? (
                   <Input
                     type="text"
-                    value={profile.name}
+                    value={editProfile.username}
                     onChange={(e) =>
-                      setProfile((prev) => ({ ...prev, name: e.target.value }))
+                      setEditProfile((prev) =>
+                        prev ? { ...prev, username: e.target.value } : prev
+                      )
                     }
                     className="mt-1 w-full border px-2 py-1 text-sm outline-none focus:border-fitlog-400 rounded-lg"
                   />
                 ) : (
-                  <p className="text-sm">{profile.name}</p>
+                  <p className="text-sm">{profileData?.username}</p>
                 )}
               </section>
               <section>
                 <p
                   className={`text-xs ${isEditing ? "text-fitlog-text" : "text-gray-400"}`}
                 >
-                  나이
+                  {isEditing ? "생년월일" : "나이"}
                 </p>
                 {isEditing ? (
                   <input
                     type="date"
-                    value={profile.birthDate}
+                    value={editProfile.birthDate}
                     onChange={(e) =>
-                      setProfile((prev) => ({
-                        ...prev,
-                        birthDate: e.target.value,
-                      }))
+                      setEditProfile((prev) =>
+                        prev ? { ...prev, birthDate: e.target.value } : prev
+                      )
                     }
                     className="mt-1 w-full border px-2 py-1 text-sm outline-none focus:border-fitlog-400 rounded-lg"
                   />
                 ) : (
-                  <p className="text-sm">{profile.age}세</p>
+                  <p className="text-sm">{editProfile.age}세</p>
                 )}
               </section>
               <section>
@@ -158,18 +240,17 @@ export default function ProfileModal() {
                 </p>
                 {isEditing ? (
                   <textarea
-                    value={profile.bio}
+                    value={editProfile?.bio ?? ""}
                     rows={2}
                     onChange={(e) =>
-                      setProfile((prev) => ({
-                        ...prev,
-                        bio: e.target.value,
-                      }))
+                      setEditProfile((prev) =>
+                        prev ? { ...prev, bio: e.target.value } : prev
+                      )
                     }
                     className="mt-1 w-full border px-2 py-1 text-sm outline-none focus:border-fitlog-400 rounded-lg"
                   />
                 ) : (
-                  <p className="text-sm">{profile.bio}</p>
+                  <p className="text-sm">{editProfile?.bio}</p>
                 )}
               </section>
             </div>
@@ -185,8 +266,9 @@ export default function ProfileModal() {
                 <ActionButton
                   className="flex w-full items-center justify-center py-2 shadow-fitlog-btn-sm"
                   onClick={handleSaveProfile}
+                  disabled={isUpdateProfilePending}
                 >
-                  저장
+                  {isUpdateProfilePending ? "저장 중..." : "저장"}
                 </ActionButton>
               </div>
             ) : (
@@ -202,9 +284,10 @@ export default function ProfileModal() {
                 <ActionButton
                   onClick={() => logout()}
                   className="mt-3 w-full flex bg-white items-center justify-center py-2 text-fitlog-text border text-sm border-fitlog-beige hover:bg-[#F1F1F1] shadow-fitlog-btn-sm"
+                  disabled={isLogoutPending}
                 >
                   <LogOut className="w-4 h-4 mr-2" />
-                  {isPending ? "로그아웃 중..." : "로그아웃"}
+                  {isLogoutPending ? "로그아웃 중..." : "로그아웃"}
                 </ActionButton>
               </>
             )}
