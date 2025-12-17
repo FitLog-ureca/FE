@@ -12,7 +12,7 @@ type ExerciseListItem = {
 interface ExercisesDropdownButtonProps {
   completed: boolean;
   onToggleCompleted: () => void;
-  onSelectExercise: (exerciseName: string) => void;
+  onSelectExercise: (exerciseId: number) => void;
 }
 
 export default function ExercisesDropdownButton({
@@ -75,7 +75,7 @@ export default function ExercisesDropdownButton({
                 <li
                   key={exercise.exerciseId}
                   onClick={() => {
-                    onSelectExercise(exercise.name);
+                    onSelectExercise(exercise.exerciseId);
                     setSearch("");
                     setOpen(false);
                   }}

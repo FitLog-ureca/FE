@@ -5,20 +5,26 @@ import GoalHeader from "@/components/main-right/GoalHeader";
 import SetList from "@/components/main-right/SetList";
 import ExercisesDropdownButton from "@/components/main-right/ExercisesDropdownButton";
 import { GoalType, SetUpdatePayload } from "@/types/todoMain";
+import { useCreateTodo } from "@/lib/tanstack/mutation/createTodo";
 
 interface GoalListProps {
   goals: GoalType[];
+  selectedDate: string;
 }
 
-export default function GoalList({ goals }: GoalListProps) {
+export default function GoalList({ goals, selectedDate }: GoalListProps) {
   const completed = false;
+  const { mutate: createTodo } = useCreateTodo(selectedDate);
 
   const onToggleCompleted = () => {
     // 👉 다음 단계에서 mutation으로 대체될 예정
   };
 
-  const onCreateGoal = (exerciseName: string) => {
-    // 👉 다음 단계: 운동 항목 추가 API
+  const onCreateGoal = (exerciseId: number) => {
+     createTodo({
+      date: selectedDate,
+      exerciseId,
+    });
   };
 
   const onCreateSet = (goalId: number) => {
@@ -33,11 +39,7 @@ export default function GoalList({ goals }: GoalListProps) {
     // 👉 다음 단계
   };
 
-  const onUpdateSet = (
-    goalId: number,
-    setId: number,
-    newValues: SetUpdatePayload
-  ) => {
+  const onUpdateSet = (goalId: number, setId: number, newValues: SetUpdatePayload) => {
     // 👉 다음 단계
   };
 

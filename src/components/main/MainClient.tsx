@@ -65,7 +65,9 @@ export default function MainClient() {
           )}
 
           {/* 날짜 선택 + 운동 미완료 -> GoalList */}
-          {selectedDate && data && !data.isDone && <GoalList key={selectedDate} goals={goalModels} />}
+          {selectedDate && data && !data.isDone && (
+            <GoalList key={selectedDate} goals={goalModels} selectedDate={selectedDate} />
+          )}
 
           {/* 날짜 선택 + 운동 완료 -> RecordList */}
           {selectedDate && data && data.isDone && (
