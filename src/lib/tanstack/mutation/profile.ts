@@ -9,8 +9,5 @@ export function useUpdateProfile() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["profile"] });
     },
-    onError: () => {
-      alert("프로필 저장에 실패했습니다.");
-    },
   });
 }

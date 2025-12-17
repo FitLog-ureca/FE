@@ -21,7 +21,7 @@ import { useUpdateProfile } from "@/lib/tanstack/mutation/profile";
 export default function ProfileModal() {
   const { mutate: logout, isPending: isLogoutPending } = useLogout();
   const { data: profileData, isLoading } = useGetProfile();
-  const { mutate: updateProfile, isPending: isUpdateProfilePending } =
+  const { mutateAsync: updateProfile, isPending: isUpdateProfilePending } =
     useUpdateProfile();
 
   const [isEditing, setIsEditing] = useState<boolean>(false);
@@ -73,19 +73,25 @@ export default function ProfileModal() {
     }
   };
 
-  const handleSaveProfile = () => {
+  const handleSaveProfile = async () => {
     if (!editProfile) return;
 
-    updateProfile({
-      payload: {
-        username: editProfile.username,
-        birthDate: editProfile.birthDate,
-        bio: editProfile.bio,
-      },
-      profileImage: isProfileImageReset ? null : profileImageFile,
-    });
-    setIsEditing(false);
-    setIsProfileImageReset(false);
+    try {
+      await updateProfile({
+        payload: {
+          username: editProfile.username,
+          birthDate: editProfile.birthDate,
+          bio: editProfile.bio,
+        },
+        profileImage: isProfileImageReset ? null : profileImageFile,
+      });
+
+      setIsEditing(false);
+      setIsProfileImageReset(false);
+    } catch (error) {
+      alert("이름은 필수입니다.");
+      console.log(error);
+    }
   };
 
   useEffect(() => {
@@ -188,7 +194,7 @@ export default function ProfileModal() {
                 <p
                   className={`text-xs ${isEditing ? "text-fitlog-text" : "text-gray-400"}`}
                 >
-                  이름
+                  {isEditing ? "이름 *" : "이름"}
                 </p>
                 {isEditing ? (
                   <Input
@@ -202,7 +208,7 @@ export default function ProfileModal() {
                     className="mt-1 w-full border px-2 py-1 text-sm outline-none focus:border-fitlog-400 rounded-lg"
                   />
                 ) : (
-                  <p className="text-sm">{editProfile.username}</p>
+                  <p className="text-sm">{profileData?.username}</p>
                 )}
               </section>
               <section>
