@@ -1,136 +1,50 @@
 "use client";
 
-import React, { useRef, useState } from "react";
+import React from "react";
 import GoalHeader from "@/components/main-right/GoalHeader";
 import SetList from "@/components/main-right/SetList";
 import ExercisesDropdownButton from "@/components/main-right/ExercisesDropdownButton";
 import { GoalType, SetUpdatePayload } from "@/types/todoMain";
 
-const mockDataGoal: GoalType[] = [
-  {
-    id: 1, // 운동 항목 ID
-    exercise: "벤치프레스", // 운동 종목
-    sets: [
-      {
-        id: 1, // 세트 ID
-        setsNumber: 1, // 세트 번호
-        repsTarget: "",
-        weight: "",
-      },
-    ],
-  },
+interface GoalListProps {
+  goals: GoalType[];
+}
 
-  {
-    id: 2,
-    exercise: "스쿼트",
-    sets: [
-      {
-        id: 1,
-        setsNumber: 1,
-        repsTarget: "",
-        weight: "",
-      },
-    ],
-  },
-];
-
-export default function GoalList() {
-  const [goals, setGoals] = useState<GoalType[]>(mockDataGoal);
-  const [completed, setCompleted] = useState(false);
-  const idRef = useRef(3);
-  const setIdRef = useRef(1);
+export default function GoalList({ goals }: GoalListProps) {
+  const completed = false;
 
   const onToggleCompleted = () => {
-    setCompleted(!completed);
+    // 👉 다음 단계에서 mutation으로 대체될 예정
   };
 
   const onCreateGoal = (exerciseName: string) => {
-    const newGoal: GoalType = {
-      id: idRef.current++,
-      exercise: exerciseName,
-      sets: [
-        {
-          id: setIdRef.current++,
-          setsNumber: 1,
-          repsTarget: "",
-          weight: "",
-        },
-      ],
-    };
-
-    setGoals([...goals, newGoal]);
+    // 👉 다음 단계: 운동 항목 추가 API
   };
 
   const onCreateSet = (goalId: number) => {
-    setGoals((prev) =>
-      prev.map((goal) =>
-        goal.id === goalId
-          ? {
-              ...goal,
-              sets: [
-                ...goal.sets,
-                {
-                  id: setIdRef.current++,
-                  setsNumber: goal.sets.length + 1,
-                  repsTarget: "",
-                  weight: "",
-                },
-              ],
-            }
-          : goal
-      )
-    );
+    // 👉 다음 단계
   };
 
   const onRemoveGoal = (goalId: number) => {
-    setGoals((prev) => prev.filter((goal) => goal.id !== goalId));
+    // 👉 다음 단계
   };
 
   const onRemoveSet = (goalId: number, setId: number) => {
-    setGoals((prev) =>
-      prev.flatMap((goal) => {
-        if (goal.id !== goalId) return goal;
-
-        // 세트가 1개뿐이면 → 운동(goal) 자체 삭제
-        if (goal.sets.length === 1) {
-          return [];
-        }
-
-        // 세트가 여러 개면 → 해당 세트만 삭제 + 번호 재정렬
-        const newSets = goal.sets
-          .filter((set) => set.id !== setId)
-          .map((set, index) => ({
-            ...set,
-            setsNumber: index + 1,
-          }));
-
-        return {
-          ...goal,
-          sets: newSets,
-        };
-      })
-    );
+    // 👉 다음 단계
   };
 
-  const onUpdateSet = (goalId: number, setId: number, newValues: SetUpdatePayload) => {
-    setGoals((prev) =>
-      prev.map((goal) =>
-        goal.id === goalId
-          ? {
-              ...goal,
-              sets: goal.sets.map((set) => (set.id === setId ? { ...set, ...newValues } : set)),
-            }
-          : goal
-      )
-    );
+  const onUpdateSet = (
+    goalId: number,
+    setId: number,
+    newValues: SetUpdatePayload
+  ) => {
+    // 👉 다음 단계
   };
 
   return (
     <div className="w-full flex flex-col gap-6">
-      {/* 날짜, 텍스트, 운동 시작 버튼 렌더링 */}
       <GoalHeader completed={completed} />
 
-      {/* SetList 여러개 렌더링 */}
       {goals.map((goal) => (
         <SetList
           key={goal.id}
@@ -143,7 +57,6 @@ export default function GoalList() {
         />
       ))}
 
-      {/* 버튼 렌더링 */}
       <ExercisesDropdownButton
         completed={completed}
         onToggleCompleted={onToggleCompleted}

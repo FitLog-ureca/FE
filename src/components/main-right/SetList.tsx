@@ -1,3 +1,5 @@
+"use client"
+
 import React from "react";
 import ActionButton from "@/components/ui/ActionButton";
 import { Plus } from "lucide-react";
