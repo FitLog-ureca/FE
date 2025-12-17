@@ -3,64 +3,93 @@
 import { ChevronRight } from "lucide-react";
 import ActionButton from "@/components/ui/ActionButton";
 import Checkbox from "@/components/ui/CheckBox";
-import Input from "@/components/ui/Input";
 import { useState } from "react";
 import { useAppDispatch } from "@/store/redux/hooks";
-import { todoSetCompleted } from "@/store/redux/features/todos/todoSlice";
-import { startRest } from "@/store/redux/features/todos/timerSlice";
-
-interface TodoSetRowProps {
-  todoId: number;
-  setId: number;
-  setNumber: number;
-  isCompleted: boolean;
-}
+import {
+  toggleTodoCompleted,
+  updateTodoCompleted,
+} from "@/store/redux/features/todos/todoSlice";
+import { useTodoComplete } from "@/lib/tanstack/mutation/todoComplete";
+import { TodoSetRowResponse } from "@/types/todos";
 
 export default function TodoSetRow({
-  setNumber,
-  isCompleted,
   todoId,
-  setId,
-}: TodoSetRowProps) {
+  setsNumber,
+  repsTarget,
+  weight,
+  restTime,
+  isCompleted,
+}: TodoSetRowResponse) {
   const [isResting, setIsResting] = useState<boolean>(false);
   const dispatch = useAppDispatch();
+  const { mutate: completeTodo, isPending } = useTodoComplete();
+
+  // 완료 토글
   const handleCompleted = () => {
-    dispatch(todoSetCompleted({ todoId, setId }));
+    if (isPending) return;
+
+    // 즉시 Redux 상태 업데이트 (Optimistic Update)
+    dispatch(toggleTodoCompleted(todoId));
+
+    // API 호출 (tanstack)
+    completeTodo(todoId, {
+      onSuccess: (response) => {
+        if (response?.data) {
+          dispatch(
+            updateTodoCompleted({
+              todoId: response.data.todoId,
+              isCompleted: response.data.isCompleted,
+            })
+          );
+        }
+      },
+      onError: (error) => {
+        console.error("세트 완료 실패:", error);
+        dispatch(toggleTodoCompleted(todoId));
+        alert("세트 완료에 실패했습니다. 다시 시도해주세요.");
+      },
+    });
   };
 
   const handleStartResting = () => {
-    dispatch(startRest(0));
+    // TODO: 타이머 시작 로직
     setIsResting(true);
   };
 
+  const isRestDisabled = !isCompleted || isResting || restTime !== null;
+
   return (
     <div className="flex flex-row gap-3 justify-center items-center">
-      <Checkbox checked={isCompleted} onChange={handleCompleted} />
-      <p className="font-bold w-12">Set {setNumber}</p>
+      <Checkbox
+        checked={isCompleted}
+        onChange={handleCompleted}
+        disabled={isPending}
+      />
+      <p className="font-bold w-12">Set {setsNumber}</p>
       <div
         className={`w-23 h-9 px-3 text-sm rounded-xl border shadow-fitlog-btn-sm
-    flex items-center justify-center
-    ${
-      isCompleted
-        ? "border-fitlog-beige bg-[#EEEEEE] text-gray-400 cursor-auto"
-        : "border-fitlog-beige text-fitlog-text"
-    }
-  `}
+          flex items-center justify-center
+          ${
+            isCompleted
+              ? "border-fitlog-beige bg-[#EEEEEE] text-gray-400 cursor-auto"
+              : "border-fitlog-beige text-fitlog-text"
+          }
+        `}
       >
-        10
+        {repsTarget}
       </div>
       회
       <div
         className={`w-23 h-9 px-3 text-sm rounded-xl border shadow-fitlog-btn-sm
-    flex items-center justify-center
-    ${
-      isCompleted
-        ? "border-fitlog-beige bg-[#EEEEEE] text-gray-400 cursor-auto"
-        : "border-fitlog-beige text-fitlog-text"
-    }
-  `}
+          flex items-center justify-center
+          ${
+            isCompleted
+              ? "border-fitlog-beige bg-[#EEEEEE] text-gray-400 cursor-auto"
+              : "border-fitlog-beige text-fitlog-text"
+          }
+        `}
       >
-        0
+        {weight}
       </div>
       kg
       <div
@@ -73,19 +102,19 @@ export default function TodoSetRow({
           }
         `}
       >
-        -
+        {restTime ?? "-"}
       </div>
       초
       <ActionButton
         onClick={handleStartResting}
-        disabled={!isCompleted || isResting}
+        disabled={isRestDisabled}
         className={`flex items-center justify-center w-17 h-9 rounded-xl shadow-fitlog-btn-sm
           ${
-            isResting
-              ? "bg-fitlog-500 text-white hover:bg-fitlog-500 cursor-auto"
+            isResting || restTime !== null
+              ? "bg-fitlog-500 text-white hover:bg-fitlog-500 cursor-not-allowed"
               : "bg-white border border-fitlog-500/60 text-fitlog-500 hover:bg-fitlog-100"
           }
-          ${!isCompleted ? "cursor-not-allowed  hover:bg-white! " : ""}
+          ${!isCompleted ? "cursor-not-allowed hover:bg-white!" : ""}
         `}
       >
         휴식

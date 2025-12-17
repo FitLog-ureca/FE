@@ -1,36 +1,62 @@
-import { Todo, Todos } from "@/types/todos";
+import { TodoResponse } from "@/types/todos";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-const initialState: Todos = {
-  todos: [],
-};
-
-interface TodoSetCompletedPayload {
-  todoId: number;
-  setId: number;
+interface TodosState {
+  data: TodoResponse | null;
 }
+
+const initialState: TodosState = {
+  data: null,
+};
 
 const todosSlice = createSlice({
   name: "todos",
   initialState,
   reducers: {
-    todoSetCompleted(state, action: PayloadAction<TodoSetCompletedPayload>) {
-      const { todoId, setId } = action.payload;
-
-      const todo = state.todos.find((todo) => todo.todoId === todoId);
-      if (!todo) return;
-
-      const set = todo.sets.find((set) => set.setId === setId);
-      if (!set) return;
-
-      set.isCompleted = !set.isCompleted;
+    // API 데이터 전체 설정
+    setTodosData(state, action: PayloadAction<TodoResponse>) {
+      state.data = action.payload;
     },
 
-    setTodos(state, action: PayloadAction<Todo[]>) {
-      state.todos = action.payload;
+    // 개별 세트 완료 상태 토글
+    toggleTodoCompleted(state, action: PayloadAction<number>) {
+      const todoId = action.payload;
+
+      if (!state.data?.exercises) return;
+
+      const exercise = state.data.exercises.find((ex) => ex.todoId === todoId);
+      if (exercise) {
+        exercise.isCompleted = !exercise.isCompleted;
+      }
+    },
+
+    // 서버에서 완료 성공 후 상태 업데이트
+    updateTodoCompleted(
+      state,
+      action: PayloadAction<{ todoId: number; isCompleted: boolean }>
+    ) {
+      const { todoId, isCompleted } = action.payload;
+
+      if (!state.data?.exercises) return;
+
+      const exercise = state.data.exercises.find((ex) => ex.todoId === todoId);
+      if (exercise) {
+        exercise.isCompleted = isCompleted;
+      }
+    },
+
+    // 데이터 초기화
+    clearTodos(state) {
+      state.data = null;
     },
   },
 });
 
-export const { todoSetCompleted, setTodos } = todosSlice.actions;
+export const {
+  setTodosData,
+  toggleTodoCompleted,
+  updateTodoCompleted,
+  clearTodos,
+} = todosSlice.actions;
+
 export default todosSlice.reducer;
