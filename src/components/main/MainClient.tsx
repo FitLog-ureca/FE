@@ -14,23 +14,28 @@ export default function MainClient() {
 
   const { data, isLoading, error } = useExercisesByDate(selectedDate);
 
-  /** 🔹 서버 데이터 → GoalList용 데이터 변환 */
+  /** 서버 데이터 → GoalList용 데이터 변환 */
   const goalModels: GoalType[] = useMemo(() => {
     if (!data || data.isDone) return [];
 
     const map = new Map<number, GoalType>();
 
     data.exercises.forEach((item) => {
-      if (!map.has(item.todoId)) {
+      // 🔑 sets_number = 1 이면 새로운 Goal 시작
+      if (item.setsNumber === 1) {
         map.set(item.todoId, {
-          id: item.todoId,
+          id: item.todoId, // 👉 Set 1 todoId
           exercise: item.exerciseName,
           sets: [],
         });
       }
 
-      map.get(item.todoId)!.sets.push({
-        id: item.setsNumber,
+      // 🔑 가장 최근의 Goal(Set 1) 찾기
+      const currentGoal = Array.from(map.values()).at(-1);
+      if (!currentGoal) return;
+
+      currentGoal.sets.push({
+        id: item.todoId, // 세트의 todoId
         setsNumber: item.setsNumber,
         repsTarget: item.repsTarget ?? "",
         weight: item.weight ?? "",

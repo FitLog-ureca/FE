@@ -6,6 +6,8 @@ import SetList from "@/components/main-right/SetList";
 import ExercisesDropdownButton from "@/components/main-right/ExercisesDropdownButton";
 import { GoalType, SetUpdatePayload } from "@/types/todoMain";
 import { useCreateTodo } from "@/lib/tanstack/mutation/createTodo";
+import { useAddSet } from "@/lib/tanstack/mutation/addSet";
+
 
 interface GoalListProps {
   goals: GoalType[];
@@ -15,6 +17,7 @@ interface GoalListProps {
 export default function GoalList({ goals, selectedDate }: GoalListProps) {
   const completed = false;
   const { mutate: createTodo } = useCreateTodo(selectedDate);
+  const { mutate: addSet } = useAddSet(selectedDate);
 
   const onToggleCompleted = () => {
     // 👉 다음 단계에서 mutation으로 대체될 예정
@@ -28,7 +31,7 @@ export default function GoalList({ goals, selectedDate }: GoalListProps) {
   };
 
   const onCreateSet = (goalId: number) => {
-    // 👉 다음 단계
+     addSet(goalId);
   };
 
   const onRemoveGoal = (goalId: number) => {
