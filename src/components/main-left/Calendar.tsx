@@ -5,6 +5,7 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import { cn } from "@/lib/cn";
 import YearMonthPicker from "@/components/main-left/YearMonthPicker";
 import CalendarCell from "@/components/main-left/CalendarCell";
+import { CalendarProps } from "@/types/calendar";
 
 // 운동 강도 Mock 데이터
 export const workoutIntensity: Record<string, number> = {
@@ -19,7 +20,7 @@ export const workoutIntensity: Record<string, number> = {
   "2025-12-09": 3,
 };
 
-export function Calendar({ className }: { className?: string }) {
+export function Calendar({ className, onSelectDate }: CalendarProps) {
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
 
@@ -35,6 +36,19 @@ export function Calendar({ className }: { className?: string }) {
     d.setHours(0, 0, 0, 0);
     return d;
   });
+
+  /* 날짜 선택 핸들러 */
+  const formatDate = (date: Date) => {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
+  };
+
+  const handleSelectDate = (date: Date) => {
+    setSelectedDate(date);
+    onSelectDate?.(formatDate(date));
+  };
 
   /* 5주 / 6주 판단 */
   const totalCells = startDay + daysInMonth;
@@ -52,7 +66,7 @@ export function Calendar({ className }: { className?: string }) {
         isCurrentMonth={false}
         selectedDate={selectedDate}
         today={today}
-        onSelect={setSelectedDate}
+        onSelect={handleSelectDate}
       />
     );
   }
@@ -67,7 +81,7 @@ export function Calendar({ className }: { className?: string }) {
         isCurrentMonth={true}
         selectedDate={selectedDate}
         today={today}
-        onSelect={setSelectedDate}
+        onSelect={handleSelectDate}
       />
     );
   }
@@ -83,7 +97,7 @@ export function Calendar({ className }: { className?: string }) {
         isCurrentMonth={false}
         selectedDate={selectedDate}
         today={today}
-        onSelect={setSelectedDate}
+        onSelect={handleSelectDate}
       />
     );
   }
@@ -91,7 +105,7 @@ export function Calendar({ className }: { className?: string }) {
   const weekDays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
   return (
-    <div className={cn("w-full rounded-xl bg-white p-6 shadow border border-gray-200", className)}>
+    <div className={cn("w-full rounded-xl bg-white p-6 shadow border border-fitlog-beige", className)}>
       {/* 상단 월 이동 */}
       <div className="mb-5 flex items-center justify-between">
         <button
