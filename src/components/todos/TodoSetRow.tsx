@@ -56,6 +56,8 @@ export default function TodoSetRow({
     setIsResting(true);
   };
 
+  const isRestDisabled = !isCompleted || isResting || restTime !== null;
+
   return (
     <div className="flex flex-row gap-3 justify-center items-center">
       <Checkbox
@@ -105,11 +107,11 @@ export default function TodoSetRow({
       초
       <ActionButton
         onClick={handleStartResting}
-        disabled={!isCompleted || isResting}
+        disabled={isRestDisabled}
         className={`flex items-center justify-center w-17 h-9 rounded-xl shadow-fitlog-btn-sm
           ${
-            isResting
-              ? "bg-fitlog-500 text-white hover:bg-fitlog-500 cursor-auto"
+            isResting || restTime !== null
+              ? "bg-fitlog-500 text-white hover:bg-fitlog-500 cursor-not-allowed"
               : "bg-white border border-fitlog-500/60 text-fitlog-500 hover:bg-fitlog-100"
           }
           ${!isCompleted ? "cursor-not-allowed hover:bg-white!" : ""}
