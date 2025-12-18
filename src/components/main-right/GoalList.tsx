@@ -9,6 +9,7 @@ import { useCreateTodo } from "@/lib/tanstack/mutation/createTodo";
 import { useAddSet } from "@/lib/tanstack/mutation/addSet";
 import { useDeleteTodo } from "@/lib/tanstack/mutation/deleteTodo";
 import { useDeleteWorkout } from "@/lib/tanstack/mutation/deleteWorkout";
+import { useUpdateSet } from "@/lib/tanstack/mutation/updateSet";
 
 interface GoalListProps {
   goals: GoalType[];
@@ -21,6 +22,7 @@ export default function GoalList({ goals, selectedDate }: GoalListProps) {
   const { mutate: addSet } = useAddSet(selectedDate);
   const { mutate: deleteTodo } = useDeleteTodo(selectedDate);
   const { mutate: deleteWorkout } = useDeleteWorkout(selectedDate);
+  const { mutate: updateSet } = useUpdateSet(selectedDate);
 
   const onToggleCompleted = () => {
     setCompleted((prev) => !prev);
@@ -46,7 +48,10 @@ export default function GoalList({ goals, selectedDate }: GoalListProps) {
   };
 
   const onUpdateSet = (goalId: number, setId: number, newValues: SetUpdatePayload) => {
-    // 👉 다음 단계
+    updateSet({
+      todoId: setId,
+      payload: newValues,
+    });
   };
 
   return (
