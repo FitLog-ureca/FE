@@ -16,10 +16,11 @@ import {
 } from "@/store/redux/features/todos/todoSlice";
 
 interface TimerProps {
+  currentTodoId?: number;
   date: string;
 }
 
-export default function Timer({ date }: TimerProps) {
+export default function Timer({ currentTodoId, date }: TimerProps) {
   const [time, setTime] = useState<number>(0);
   const [isRunning, setIsRunning] = useState<boolean>(false);
   const [records, setRecords] = useState<number[]>([]);
