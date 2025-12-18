@@ -7,7 +7,7 @@ import ExercisesDropdownButton from "@/components/main-right/ExercisesDropdownBu
 import { GoalType, SetUpdatePayload } from "@/types/todoMain";
 import { useCreateTodo } from "@/lib/tanstack/mutation/createTodo";
 import { useAddSet } from "@/lib/tanstack/mutation/addSet";
-
+import { useDeleteTodo } from "@/lib/tanstack/mutation/deleteTodo";
 
 interface GoalListProps {
   goals: GoalType[];
@@ -18,28 +18,35 @@ export default function GoalList({ goals, selectedDate }: GoalListProps) {
   const completed = false;
   const { mutate: createTodo } = useCreateTodo(selectedDate);
   const { mutate: addSet } = useAddSet(selectedDate);
+  const { mutate: deleteTodo } = useDeleteTodo(selectedDate);
 
   const onToggleCompleted = () => {
     // 👉 다음 단계에서 mutation으로 대체될 예정
   };
 
   const onCreateGoal = (exerciseId: number) => {
-     createTodo({
+    createTodo({
       date: selectedDate,
       exerciseId,
     });
   };
 
   const onCreateSet = (goalId: number) => {
-     addSet(goalId);
+    addSet(goalId);
   };
 
   const onRemoveGoal = (goalId: number) => {
-    // 👉 다음 단계
+    const goal = goals.find((g) => g.id === goalId);
+    if (!goal) return;
+
+    // 모든 세트(todoId)를 삭제
+    goal.sets.forEach((set) => {
+      deleteTodo(set.id);
+    });
   };
 
   const onRemoveSet = (goalId: number, setId: number) => {
-    // 👉 다음 단계
+    deleteTodo(setId);
   };
 
   const onUpdateSet = (goalId: number, setId: number, newValues: SetUpdatePayload) => {

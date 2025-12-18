@@ -17,25 +17,33 @@ export default function MainClient() {
   /** 서버 데이터 → GoalList용 데이터 변환 */
   const goalModels: GoalType[] = useMemo(() => {
     if (!data || data.isDone) return [];
+    data.exercises.forEach((item) => {
+      console.log(
+        "todoId:",
+        item.todoId,
+        "workoutId:",
+        item.workoutId,
+        "exercise:",
+        item.exerciseName,
+        "set:",
+        item.setsNumber
+      );
+    });
 
     const map = new Map<number, GoalType>();
 
     data.exercises.forEach((item) => {
-      // 🔑 sets_number = 1 이면 새로운 Goal 시작
-      if (item.setsNumber === 1) {
-        map.set(item.todoId, {
-          id: item.todoId, // 👉 Set 1 todoId
+      // 기준: workoutId
+      if (!map.has(item.workoutId)) {
+        map.set(item.workoutId, {
+          id: item.workoutId, // 이후 세트 추가 기준
           exercise: item.exerciseName,
           sets: [],
         });
       }
 
-      // 🔑 가장 최근의 Goal(Set 1) 찾기
-      const currentGoal = Array.from(map.values()).at(-1);
-      if (!currentGoal) return;
-
-      currentGoal.sets.push({
-        id: item.todoId, // 세트의 todoId
+      map.get(item.workoutId)!.sets.push({
+        id: item.todoId, // 세트 단위 id
         setsNumber: item.setsNumber,
         repsTarget: item.repsTarget ?? "",
         weight: item.weight ?? "",

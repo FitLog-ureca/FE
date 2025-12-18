@@ -40,7 +40,7 @@ export default function SetItem({
       />
       kg
       {/* 세트 삭제 */}
-      {!completed && (
+      {!completed && set.setsNumber !== 1 && (
         <CloseButton onClick={() => onRemoveSet(goalId, set.id)} className="w-5 h-5" />
       )}
     </div>

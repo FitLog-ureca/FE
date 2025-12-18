@@ -14,3 +14,8 @@ export async function addSet(todoId: number) {
   const res = await apiClient.post(`/todos/${todoId}/sets`);
   return res.data;
 }
+
+export async function deleteTodo(todoId: number) {
+  const res = await apiClient.delete(`/todos/${todoId}`);
+  return res.data;
+}

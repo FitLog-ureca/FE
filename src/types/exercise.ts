@@ -1,5 +1,6 @@
 export interface ExerciseItem {
   todoId: number;
+  workoutId: number;
   exerciseId: number;
   exerciseName: string;
   setsNumber: number;
