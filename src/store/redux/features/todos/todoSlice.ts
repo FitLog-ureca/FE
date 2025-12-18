@@ -3,17 +3,19 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 interface TodosState {
   data: TodoResponse | null;
+  lastCompletedTodoId: number | null; // 마지막으로 선택(완료 체크)한 todoId
 }
 
 const initialState: TodosState = {
   data: null,
+  lastCompletedTodoId: null,
 };
 
 const todosSlice = createSlice({
   name: "todos",
   initialState,
   reducers: {
-    // API 데이터 전체 설정
+    // 투두 조회
     setTodosData(state, action: PayloadAction<TodoResponse>) {
       state.data = action.payload;
     },
@@ -27,6 +29,10 @@ const todosSlice = createSlice({
       const exercise = state.data.exercises.find((ex) => ex.todoId === todoId);
       if (exercise) {
         exercise.isCompleted = !exercise.isCompleted;
+
+        if (exercise.isCompleted) {
+          state.lastCompletedTodoId = todoId;
+        }
       }
     },
 
@@ -42,12 +48,43 @@ const todosSlice = createSlice({
       const exercise = state.data.exercises.find((ex) => ex.todoId === todoId);
       if (exercise) {
         exercise.isCompleted = isCompleted;
+
+        if (isCompleted) {
+          state.lastCompletedTodoId = todoId;
+        }
+      }
+    },
+
+    // 휴식 시간 업데이트
+    updateRestTime(
+      state,
+      action: PayloadAction<{ todoId: number; restTime: number }>
+    ) {
+      const { todoId, restTime } = action.payload;
+
+      if (!state.data?.exercises) return;
+
+      const exercise = state.data.exercises.find((ex) => ex.todoId === todoId);
+      if (exercise) {
+        exercise.restTime = restTime;
+      }
+    },
+    // 휴식 시간 초기화
+    resetRestTime(state, action: PayloadAction<number>) {
+      const todoId = action.payload;
+
+      if (!state.data?.exercises) return;
+
+      const exercise = state.data.exercises.find((ex) => ex.todoId === todoId);
+      if (exercise) {
+        exercise.restTime = null;
       }
     },
 
     // 데이터 초기화
     clearTodos(state) {
       state.data = null;
+      state.lastCompletedTodoId = null;
     },
   },
 });
@@ -56,6 +93,8 @@ export const {
   setTodosData,
   toggleTodoCompleted,
   updateTodoCompleted,
+  updateRestTime,
+  resetRestTime,
   clearTodos,
 } = todosSlice.actions;
 
