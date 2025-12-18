@@ -1,10 +1,7 @@
 import Image from "next/image";
 import React from "react";
 import greetingImg from "@/assets/images/greeting.png";
-
-type GreetingProps = {
-  username: string;
-};
+import { GreetingProps } from "@/types/todoMain";
 
 export default function Greeting({ username }: GreetingProps) {
   return (

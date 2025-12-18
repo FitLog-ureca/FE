@@ -1,10 +1,6 @@
 import ActionButton from "@/components/ui/ActionButton";
+import { GoalHeaderProps } from "@/types/todoMain";
 import { useRouter } from "next/navigation";
-
-interface GoalHeaderProps {
-  completed: boolean;
-  selectedDate: string; // YYYY-MM-DD
-}
 
 export default function GoalHeader({ completed, selectedDate }: GoalHeaderProps) {
   const router = useRouter();

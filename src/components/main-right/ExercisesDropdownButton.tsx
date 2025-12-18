@@ -3,17 +3,7 @@ import ActionButton from "@/components/ui/ActionButton";
 import { Plus } from "lucide-react";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { useExerciseList } from "@/lib/tanstack/query/exerciseList";
-
-type ExerciseListItem = {
-  exerciseId: number;
-  name: string;
-};
-
-interface ExercisesDropdownButtonProps {
-  completed: boolean;
-  onToggleCompleted: () => void;
-  onSelectExercise: (exerciseId: number) => void;
-}
+import { ExerciseListItem, ExercisesDropdownButtonProps } from "@/types/todoMain";
 
 export default function ExercisesDropdownButton({
   completed,
