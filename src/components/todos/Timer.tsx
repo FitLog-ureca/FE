@@ -5,24 +5,46 @@ import ActionButton from "@/components/ui/ActionButton";
 import { useState, useRef, useEffect } from "react";
 import FinishButton from "@/components/todos/FinishButton";
 import { useAppDispatch, useAppSelector } from "@/store/redux/hooks";
-import { stopRest } from "@/store/redux/features/todos/timerSlice";
+import { clearTimer, stopRest } from "@/store/redux/features/todos/timerSlice";
+import {
+  useRestTimeRecord,
+  useRestTimeReset,
+} from "@/lib/tanstack/mutation/rest";
+import {
+  resetRestTime,
+  updateRestTime,
+} from "@/store/redux/features/todos/todoSlice";
 
-export default function Timer() {
+interface TimerProps {
+  currentTodoId?: number;
+  date: string;
+}
+
+export default function Timer({ currentTodoId, date }: TimerProps) {
   const [time, setTime] = useState<number>(0);
   const [isRunning, setIsRunning] = useState<boolean>(false);
   const [records, setRecords] = useState<number[]>([]);
 
   const dispatch = useAppDispatch();
-  const { isActive, duration } = useAppSelector((state) => state.timer);
+  const { isActive, duration, todoId } = useAppSelector((state) => state.timer);
+
+  // 이 타이머가 활성화되어야 하는지 확인
+  const isThisTimerActive =
+    isActive && (!currentTodoId || todoId === currentTodoId);
+
+  const { mutate: recordRestTime, isPending } = useRestTimeRecord();
+  const { mutate: resetRestTimeApi, isPending: isResetting } =
+    useRestTimeReset();
 
   useEffect(() => {
-    if (!isActive) return;
+    if (!isThisTimerActive) return;
     setTime(duration);
     setIsRunning(false);
-  }, [isActive, duration]);
+  }, [isThisTimerActive, duration]);
 
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
+  // 타이머 시간
   const formatTime = (milliseconds: number) => {
     const totalSeconds = Math.floor(milliseconds / 1000);
     const minutes = Math.floor(totalSeconds / 60);
@@ -53,19 +75,51 @@ export default function Timer() {
   };
 
   const handleRecord = () => {
-    if (time > 0) {
+    if (time > 0 && todoId) {
       const seconds = Math.floor(time / 1000);
-      setRecords((prev) => [...prev, seconds]);
-      console.log(records);
-      setTime(0);
-      setIsRunning(false);
+
+      recordRestTime(
+        { todoId, restTime: seconds },
+        {
+          onSuccess: () => {
+            setRecords((prev) => [...prev, seconds]);
+            dispatch(
+              updateRestTime({
+                todoId,
+                restTime: seconds,
+              })
+            );
+            setTime(0);
+            setIsRunning(false);
+            dispatch(stopRest());
+          },
+          onError: (error) => {
+            console.error("휴식 시간 기록 실패:", error);
+          },
+        }
+      );
     }
-    dispatch(stopRest());
   };
 
   const handleReset = () => {
-    setIsRunning(false);
-    setTime(0);
+    if (todoId) {
+      resetRestTimeApi(todoId, {
+        onSuccess: () => {
+          // Redux에서 restTime 초기화 (null)
+          dispatch(resetRestTime(todoId));
+          setIsRunning(false);
+          setTime(0);
+          dispatch(clearTimer()); // todoId도 null로 초기화
+        },
+        onError: (error) => {
+          console.error("휴식 시간 초기화 실패:", error);
+        },
+      });
+    } else {
+      // todoId가 없으면 그냥 로컬 타이머만 초기화
+      setIsRunning(false);
+      setTime(0);
+    }
   };
 
   return (
@@ -82,7 +136,7 @@ export default function Timer() {
           <div className="grid grid-cols-3 gap-3">
             <ActionButton
               onClick={handleRunning}
-              disabled={!isActive}
+              disabled={!isThisTimerActive}
               className="flex w-full items-center justify-center py-2.5 shadow-fitlog-btn-sm disabled:bg-fitlog-disabled disabled:cursor-not-allowed disabled:text-white"
             >
               {!isRunning ? (
@@ -99,24 +153,24 @@ export default function Timer() {
             </ActionButton>
             <ActionButton
               onClick={handleRecord}
-              disabled={!isActive}
+              disabled={!isThisTimerActive || isPending}
               className="flex w-full items-center justify-center py-2.5 bg-fitlog-400 shadow-fitlog-btn-sm hover:bg-[#CC595F] disabled:bg-fitlog-disabled disabled:cursor-not-allowed disabled:text-white"
             >
               <Square className="mr-2 h-4 w-4" />
-              기록
+              {isPending ? "기록 중..." : "기록"}
             </ActionButton>
             <ActionButton
               onClick={handleReset}
-              // disabled={!isActive}
+              disabled={isResetting}
               className="flex w-full items-center justify-center py-2.5 bg-white border border-fitlog-beige text-fitlog-text shadow-fitlog-btn-sm hover:bg-[#F1F1F1] disabled:bg-fitlog-disabled disabled:cursor-not-allowed disabled:text-white"
             >
               <RotateCcw className="mr-2 h-4 w-4" />
-              초기화
+              {isResetting ? "초기화 중..." : "초기화"}
             </ActionButton>
           </div>
         </div>
       </div>
-      <FinishButton />
+      <FinishButton date={date} />
     </div>
   );
 }

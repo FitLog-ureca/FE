@@ -5,6 +5,8 @@ import TodosContainer from "@/components/todos/TodosContainer";
 import BackToMainButton from "@/components/ui/BackToMainButton";
 
 export default function TodosPage() {
+  const today = new Date().toISOString().split("T")[0];
+
   return (
     <div className="flex h-screen flex-col px-28">
       <BackToMainButton />
@@ -15,7 +17,7 @@ export default function TodosPage() {
         </section>
 
         <section className="flex items-center justify-center">
-          <Timer />
+          <Timer date={today} />
         </section>
       </div>
     </div>

@@ -3,14 +3,17 @@
 import { ChevronRight } from "lucide-react";
 import ActionButton from "@/components/ui/ActionButton";
 import Checkbox from "@/components/ui/CheckBox";
-import { useState } from "react";
-import { useAppDispatch } from "@/store/redux/hooks";
+import { useEffect, useState } from "react";
+import { useAppDispatch, useAppSelector } from "@/store/redux/hooks";
 import {
+  resetRestTime,
   toggleTodoCompleted,
   updateTodoCompleted,
 } from "@/store/redux/features/todos/todoSlice";
 import { useTodoComplete } from "@/lib/tanstack/mutation/todoComplete";
 import { TodoSetRowResponse } from "@/types/todos";
+import { startRest } from "@/store/redux/features/todos/timerSlice";
+import { useRestTimeReset } from "@/lib/tanstack/mutation/rest";
 
 export default function TodoSetRow({
   todoId,
@@ -23,15 +26,31 @@ export default function TodoSetRow({
   const [isResting, setIsResting] = useState<boolean>(false);
   const dispatch = useAppDispatch();
   const { mutate: completeTodo, isPending } = useTodoComplete();
+  const { mutate: resetRestTimeApi } = useRestTimeReset();
+
+  // 휴식 버튼 비활성화 조건
+  const isRestDisabled = !isCompleted || isResting || restTime !== null;
+
+  // 타이머 상태 확인
+  const timerState = useAppSelector((state) => state.timer);
+
+  // 타이머가 종료되면 (stopRest 호출되면) isResting 상태 해제
+  useEffect(() => {
+    if (!timerState.isActive && timerState.todoId === null && isResting) {
+      setIsResting(false);
+    }
+  }, [timerState.isActive, timerState.todoId, isResting]);
+
+  useEffect(() => {
+    if (!isCompleted) setIsResting(false);
+  }, [isCompleted]);
 
   // 완료 토글
   const handleCompleted = () => {
     if (isPending) return;
-
-    // 즉시 Redux 상태 업데이트 (Optimistic Update)
+    const wasCompleted = isCompleted;
     dispatch(toggleTodoCompleted(todoId));
 
-    // API 호출 (tanstack)
     completeTodo(todoId, {
       onSuccess: (response) => {
         if (response?.data) {
@@ -41,6 +60,18 @@ export default function TodoSetRow({
               isCompleted: response.data.isCompleted,
             })
           );
+
+          // 완료 해제 시 (isCompleted :true -> false) restTime도 초기화
+          if (wasCompleted && !response.data.isCompleted && restTime !== null) {
+            resetRestTimeApi(todoId, {
+              onSuccess: () => {
+                dispatch(resetRestTime(todoId));
+              },
+              onError: (error) => {
+                console.error("휴식 시간 초기화 실패:", error);
+              },
+            });
+          }
         }
       },
       onError: (error) => {
@@ -52,11 +83,10 @@ export default function TodoSetRow({
   };
 
   const handleStartResting = () => {
-    // TODO: 타이머 시작 로직
+    const duration = 0;
+    dispatch(startRest({ duration, todoId }));
     setIsResting(true);
   };
-
-  const isRestDisabled = !isCompleted || isResting || restTime !== null;
 
   return (
     <div className="flex flex-row gap-3 justify-center items-center">

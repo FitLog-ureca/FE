@@ -8,10 +8,11 @@ interface GoalHeaderProps {
 
 export default function GoalHeader({ completed, selectedDate }: GoalHeaderProps) {
   const router = useRouter();
-
+  
   const date = new Date(selectedDate);
-
-  const handleStartWorkout = () => {
+        
+  const handleStartWorkout = async () => {
+    await fetch("/api/todos/start", { method: "POST" });
     router.push("/todos");
   };
 
@@ -27,7 +28,14 @@ export default function GoalHeader({ completed, selectedDate }: GoalHeaderProps)
         <h1 className="text-xl font-semibold"> 운동 목표</h1>
       </div>
 
-      {completed && <ActionButton onClick={handleStartWorkout} className="p-3 color-white text-md">운동 시작</ActionButton>}
+      {completed && (
+        <ActionButton
+          onClick={handleStartWorkout}
+          className="p-3 color-white text-md"
+        >
+          운동 시작
+        </ActionButton>
+      )}
     </div>
   );
 }
