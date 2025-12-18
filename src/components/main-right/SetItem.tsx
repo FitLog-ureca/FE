@@ -2,6 +2,7 @@ import React from "react";
 import Input from "@/components/ui/Input";
 import CloseButton from "@/components/ui/CloseButton";
 import { SetItemProps } from "@/types/todoMain";
+import { X } from "lucide-react";
 
 export default function SetItem({
   set,
