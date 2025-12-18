@@ -2,19 +2,17 @@ import React, { useEffect, useState } from "react";
 import ActionButton from "@/components/ui/ActionButton";
 import { Plus } from "lucide-react";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { Exercise } from "@/types/todoMain";
+import { useExerciseList } from "@/lib/tanstack/query/exerciseList";
 
-const BASE_EXERCISES = ["벤치프레스", "스쿼트", "데드리프트", "숄더프레스", "랫풀다운"];
-
-const MOCK_EXERCISES: Exercise[] = Array.from({ length: 100 }, (_, i) => ({
-  id: i + 1,
-  name: `${BASE_EXERCISES[i % BASE_EXERCISES.length]} ${Math.floor(i / BASE_EXERCISES.length) + 1}`,
-}));
+type ExerciseListItem = {
+  exerciseId: number;
+  name: string;
+};
 
 interface ExercisesDropdownButtonProps {
   completed: boolean;
   onToggleCompleted: () => void;
-  onSelectExercise: (exerciseName: string) => void;
+  onSelectExercise: (exerciseId: number) => void;
 }
 
 export default function ExercisesDropdownButton({
@@ -28,20 +26,8 @@ export default function ExercisesDropdownButton({
 
   const PAGE_SIZE = 20;
 
-  const getFilteredExercises = (keyword: string) =>
-    MOCK_EXERCISES.filter((exercise) =>
-      exercise.name.toLowerCase().includes(keyword.toLowerCase())
-    );
-
-  // const initializePagination = (keyword: string) => {
-  //   isLoadingRef.current = false;
-
-  //   const filtered = getFilteredExercises(keyword);
-  //   const firstPage = filtered.slice(0, PAGE_SIZE);
-
-  //   setItems(firstPage);
-  //   setHasNext(filtered.length > PAGE_SIZE);
-  // };
+  // 서버 운동 목록 조회 (keyword로 검색)
+  const { data, isLoading } = useExerciseList(debouncedSearch);
 
   // debounce
   useEffect(() => {
@@ -52,7 +38,7 @@ export default function ExercisesDropdownButton({
     return () => clearTimeout(timer);
   }, [search]);
 
-  const items = open ? getFilteredExercises(debouncedSearch).slice(0, PAGE_SIZE) : [];
+  const items: ExerciseListItem[] = open ? (data?.slice(0, PAGE_SIZE) ?? []) : [];
 
   return (
     <div className="flex flex-col gap-6">
@@ -87,9 +73,9 @@ export default function ExercisesDropdownButton({
             <ul className="flex flex-col max-h-64 overflow-y-auto">
               {items.map((exercise) => (
                 <li
-                  key={exercise.id}
+                  key={exercise.exerciseId}
                   onClick={() => {
-                    onSelectExercise(exercise.name);
+                    onSelectExercise(exercise.exerciseId);
                     setSearch("");
                     setOpen(false);
                   }}

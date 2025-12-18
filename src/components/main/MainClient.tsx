@@ -14,23 +14,36 @@ export default function MainClient() {
 
   const { data, isLoading, error } = useExercisesByDate(selectedDate);
 
-  /** 🔹 서버 데이터 → GoalList용 데이터 변환 */
+  /** 서버 데이터 → GoalList용 데이터 변환 */
   const goalModels: GoalType[] = useMemo(() => {
     if (!data || data.isDone) return [];
+    data.exercises.forEach((item) => {
+      console.log(
+        "todoId:",
+        item.todoId,
+        "workoutId:",
+        item.workoutId,
+        "exercise:",
+        item.exerciseName,
+        "set:",
+        item.setsNumber
+      );
+    });
 
     const map = new Map<number, GoalType>();
 
     data.exercises.forEach((item) => {
-      if (!map.has(item.todoId)) {
-        map.set(item.todoId, {
-          id: item.todoId,
+      // 기준: workoutId
+      if (!map.has(item.workoutId)) {
+        map.set(item.workoutId, {
+          id: item.workoutId, // 이후 세트 추가 기준
           exercise: item.exerciseName,
           sets: [],
         });
       }
 
-      map.get(item.todoId)!.sets.push({
-        id: item.setsNumber,
+      map.get(item.workoutId)!.sets.push({
+        id: item.todoId, // 세트 단위 id
         setsNumber: item.setsNumber,
         repsTarget: item.repsTarget ?? "",
         weight: item.weight ?? "",
@@ -65,7 +78,9 @@ export default function MainClient() {
           )}
 
           {/* 날짜 선택 + 운동 미완료 -> GoalList */}
-          {selectedDate && data && !data.isDone && <GoalList key={selectedDate} goals={goalModels} />}
+          {selectedDate && data && !data.isDone && (
+            <GoalList key={selectedDate} goals={goalModels} selectedDate={selectedDate} />
+          )}
 
           {/* 날짜 선택 + 운동 완료 -> RecordList */}
           {selectedDate && data && data.isDone && (
