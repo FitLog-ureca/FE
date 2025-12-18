@@ -8,7 +8,7 @@ import ActionButton from "@/components/ui/ActionButton";
 import loginAction from "@/actions/auth/LoginServerAction";
 import FitlogLogo from "@/components/ui/FitLogLogo";
 import { useRouter } from "next/navigation";
-import { useAuth } from "@/store/AuthContext";
+import { useAuth } from "@/hooks/useAuth";
 
 export default function LoginForm() {
   const [showPassword, setShowPassword] = useState<boolean>(false);
