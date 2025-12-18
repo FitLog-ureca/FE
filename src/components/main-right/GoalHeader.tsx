@@ -28,14 +28,15 @@ export default function GoalHeader({ completed, selectedDate }: GoalHeaderProps)
         <h1 className="text-xl font-semibold"> 운동 목표</h1>
       </div>
 
-      {completed && (
-        <ActionButton
-          onClick={handleStartWorkout}
-          className="p-3 color-white text-md"
-        >
-          운동 시작
-        </ActionButton>
-      )}
+      <ActionButton
+        onClick={completed ? handleStartWorkout : undefined}
+        className={`
+          p-3 color-white text-md
+          ${completed ? "visible" : "invisible"}
+        `}
+      >
+        운동 시작
+      </ActionButton>
     </div>
   );
 }

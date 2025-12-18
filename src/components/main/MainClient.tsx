@@ -17,18 +17,6 @@ export default function MainClient() {
   /** 서버 데이터 → GoalList용 데이터 변환 */
   const goalModels: GoalType[] = useMemo(() => {
     if (!data || data.isDone) return [];
-    data.exercises.forEach((item) => {
-      console.log(
-        "todoId:",
-        item.todoId,
-        "workoutId:",
-        item.workoutId,
-        "exercise:",
-        item.exerciseName,
-        "set:",
-        item.setsNumber
-      );
-    });
 
     const map = new Map<number, GoalType>();
 
@@ -54,7 +42,7 @@ export default function MainClient() {
   }, [data]);
 
   return (
-    <div className="md:h-[calc(100vh-72px)] grid w-full max-w-6xl grid-cols-1 gap-16 py-24 md:grid-cols-2">
+    <div className="md:h-[calc(100vh-72px)] grid w-full max-w-6xl grid-cols-1 gap-16 py-26 md:grid-cols-2">
       {/* LEFT */}
       <section className="mt-[72px] flex flex-col items-center">
         <Calendar className="w-full" onSelectDate={setSelectedDate} />
