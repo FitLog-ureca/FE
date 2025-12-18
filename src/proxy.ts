@@ -19,7 +19,16 @@ export function proxy(req: NextRequest) {
     return NextResponse.next();
   }
 
-  // refresh token 존재 여부만 확인
+  // todos 진입 가드
+  if (pathname.startsWith("/todos")) {
+    const canEnterTodos = req.cookies.get("canEnterTodos")?.value;
+
+    if (!canEnterTodos) {
+      return NextResponse.redirect(new URL("/", req.url));
+    }
+  }
+
+  // 인증 가드
   const refreshToken = req.cookies.get("refreshToken");
 
   if (!refreshToken) {
