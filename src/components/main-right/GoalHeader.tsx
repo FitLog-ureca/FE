@@ -1,8 +1,15 @@
 import ActionButton from "@/components/ui/ActionButton";
 import { useRouter } from "next/navigation";
 
-export default function GoalHeader({ completed }: { completed: boolean }) {
+interface GoalHeaderProps {
+  completed: boolean;
+  selectedDate: string; // YYYY-MM-DD
+}
+
+export default function GoalHeader({ completed, selectedDate }: GoalHeaderProps) {
   const router = useRouter();
+
+  const date = new Date(selectedDate);
 
   const handleStartWorkout = () => {
     router.push("/todos");
@@ -12,7 +19,7 @@ export default function GoalHeader({ completed }: { completed: boolean }) {
     <div className="flex justify-between items-center px-2">
       <div className="flex justify-center items-center gap-4">
         <h1 className="text-xl font-semibold">
-          {new Date().toLocaleString("ko-KR", {
+          {date.toLocaleString("ko-KR", {
             month: "long",
             day: "numeric",
           })}

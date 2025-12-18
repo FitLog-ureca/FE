@@ -2,7 +2,6 @@ import React from "react";
 import Input from "@/components/ui/Input";
 import CloseButton from "@/components/ui/CloseButton";
 import { SetItemProps } from "@/types/todoMain";
-import { X } from "lucide-react";
 
 export default function SetItem({
   set,
@@ -41,8 +40,10 @@ export default function SetItem({
       />
       kg
       {/* 세트 삭제 */}
-      {!completed && set.setsNumber !== 1 && (
+      {!completed && set.setsNumber !== 1 ? (
         <CloseButton onClick={() => onRemoveSet(goalId, set.id)} className="w-5 h-5" />
+      ) : (
+        <CloseButton className="w-5 h-5 opacity-0 pointer-events-none" />
       )}
     </div>
   );
