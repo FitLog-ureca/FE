@@ -4,10 +4,15 @@ import { useRouter } from "next/navigation";
 
 export default function GoalHeader({ completed, selectedDate }: GoalHeaderProps) {
   const router = useRouter();
-  
+
   const date = new Date(selectedDate);
-        
+
   const handleStartWorkout = async () => {
+    if (!completed) {
+      alert("운동 설정을 완료해주세요.");
+      return;
+    }
+
     await fetch("/api/todos/start", { method: "POST" });
     router.push("/todos");
   };
@@ -26,6 +31,7 @@ export default function GoalHeader({ completed, selectedDate }: GoalHeaderProps)
 
       <ActionButton
         onClick={completed ? handleStartWorkout : undefined}
+        disabled={!completed}
         className={`
           p-3 color-white text-md
           ${completed ? "visible" : "invisible"}

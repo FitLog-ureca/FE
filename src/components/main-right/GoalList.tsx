@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import GoalHeader from "@/components/main-right/GoalHeader";
 import SetList from "@/components/main-right/SetList";
 import ExercisesDropdownButton from "@/components/main-right/ExercisesDropdownButton";
-import { GoalListProps, GoalType, SetUpdatePayload } from "@/types/todoMain";
+import { GoalListProps, SetUpdatePayload } from "@/types/todoMain";
 import { useCreateTodo } from "@/lib/tanstack/mutation/createTodo";
 import { useAddSet } from "@/lib/tanstack/mutation/addSet";
 import { useDeleteTodo } from "@/lib/tanstack/mutation/deleteTodo";
