@@ -1,11 +1,12 @@
 import ActionButton from "@/components/ui/ActionButton";
 import { GoalHeaderProps } from "@/types/todoMain";
 import { useRouter } from "next/navigation";
+import { isToday } from "@/lib/date";
 
 export default function GoalHeader({ completed, selectedDate }: GoalHeaderProps) {
   const router = useRouter();
-
   const date = new Date(selectedDate);
+  const showStartButton = completed && isToday(selectedDate);
 
   const handleStartWorkout = async () => {
     if (!completed) {
@@ -31,10 +32,10 @@ export default function GoalHeader({ completed, selectedDate }: GoalHeaderProps)
 
       <ActionButton
         onClick={completed ? handleStartWorkout : undefined}
-        disabled={!completed}
+        disabled={!showStartButton}
         className={`
           p-3 color-white text-md
-          ${completed ? "visible" : "invisible"}
+          ${showStartButton ? "visible" : "invisible"}
         `}
       >
         운동 시작

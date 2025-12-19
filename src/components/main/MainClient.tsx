@@ -8,11 +8,17 @@ import Greeting from "@/components/main-right/Greeting";
 import RecordList from "@/components/main-right/RecordList";
 import { useExercisesByDate } from "@/lib/tanstack/query/exerciseRecord";
 import { GoalType } from "@/types/todoMain";
+import { isToday, isPast, isFuture } from "@/lib/date";
 
 export default function MainClient() {
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
 
   const { data, isLoading, error } = useExercisesByDate(selectedDate);
+
+  /* RIGHT 화면 분기 조건 */
+  const isTodaySelected = selectedDate && isToday(selectedDate);
+  const isPastSelected = selectedDate && isPast(selectedDate);
+  const isFutureSelected = selectedDate && isFuture(selectedDate);
 
   /** 서버 데이터 → GoalList용 데이터 변환 */
   const goalModels: GoalType[] = useMemo(() => {
@@ -65,14 +71,24 @@ export default function MainClient() {
             <p className="mt-10 text-center text-red-400">운동 정보를 불러오지 못했어요.</p>
           )}
 
-          {/* 날짜 선택 + 운동 미완료 -> GoalList */}
-          {selectedDate && data && !data.isDone && (
+          {/* [과거 날짜] -> RecordList */}
+          {selectedDate && data && isPastSelected && (
+            <RecordList exercises={data.exercises} totalCalories={data.totalCalories} />
+          )}
+
+          {/* [오늘 날짜 + 운동 미완료] -> GoalList (운동 시작 버튼 O) */}
+          {selectedDate && data && isTodaySelected && !data.isDone && (
             <GoalList key={selectedDate} goals={goalModels} selectedDate={selectedDate} />
           )}
 
-          {/* 날짜 선택 + 운동 완료 -> RecordList */}
-          {selectedDate && data && data.isDone && (
+          {/* [오늘 날짜] + 운동 완료] -> RecordList */}
+          {selectedDate && data && isTodaySelected && data.isDone && (
             <RecordList exercises={data.exercises} totalCalories={data.totalCalories} />
+          )}
+
+          {/* [미래 날짜] -> GoalList (운동 시작 버튼 X) */}
+          {selectedDate && data && isFutureSelected && (
+            <GoalList key={selectedDate} goals={goalModels} selectedDate={selectedDate} />
           )}
         </div>
       </section>
