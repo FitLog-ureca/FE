@@ -12,6 +12,7 @@ export interface TodoSetRowResponse {
 export interface TodoExercise extends TodoSetRowResponse {
   exerciseId: number;
   exerciseName: string;
+  workoutId: number;
   caloriesPerRep: number | null;
   burnedCalories: number | null;
 }

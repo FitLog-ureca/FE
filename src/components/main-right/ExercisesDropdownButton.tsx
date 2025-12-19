@@ -1,9 +1,22 @@
-import React, { useEffect, useState } from "react";
+
+"use client";
+
+import { useCallback, useEffect, useRef, useState } from "react";
 import ActionButton from "@/components/ui/ActionButton";
-import { Plus } from "lucide-react";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { useExerciseList } from "@/lib/tanstack/query/exerciseList";
-import { ExerciseListItem, ExercisesDropdownButtonProps } from "@/types/todoMain";
+import { Loader2, Plus } from "lucide-react";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { ExerciseSearchResponse } from "@/types/exerciseSearch";
+import { useExerciseSearch } from "@/lib/tanstack/query/exerciseSearch";
+
+interface ExercisesDropdownButtonProps {
+  completed: boolean;
+  onToggleCompleted: () => void;
+  onSelectExercise: (exerciseId: number) => void;
+}
 
 export default function ExercisesDropdownButton({
   completed,
@@ -14,12 +27,9 @@ export default function ExercisesDropdownButton({
   const [search, setSearch] = useState<string>("");
   const [debouncedSearch, setDebouncedSearch] = useState<string>("");
 
-  const PAGE_SIZE = 20;
+  const observerTarget = useRef<IntersectionObserver | null>(null);
 
-  // 서버 운동 목록 조회 (keyword로 검색)
-  const { data, isLoading } = useExerciseList(debouncedSearch);
-
-  // debounce
+  // Debounce search
   useEffect(() => {
     const timer = setTimeout(() => {
       setDebouncedSearch(search);
@@ -28,7 +38,44 @@ export default function ExercisesDropdownButton({
     return () => clearTimeout(timer);
   }, [search]);
 
-  const items: ExerciseListItem[] = open ? (data?.slice(0, PAGE_SIZE) ?? []) : [];
+  const { data, isLoading, isFetchingNextPage, hasNextPage, fetchNextPage } =
+    useExerciseSearch(debouncedSearch);
+
+  const exercises = (data?.pages ?? []).flatMap(
+    (page: ExerciseSearchResponse) => page.exercises
+  );
+
+  const lastElementRef = useCallback(
+    (node: HTMLLIElement | null) => {
+      if (isLoading) return;
+      if (isFetchingNextPage) return;
+
+      if (observerTarget.current) {
+        observerTarget.current.disconnect();
+      }
+      observerTarget.current = new IntersectionObserver(
+        (entries) => {
+          if (entries[0].isIntersecting && hasNextPage) {
+            fetchNextPage();
+          }
+        },
+        { threshold: 0.1 }
+      );
+
+      if (node) {
+        observerTarget.current.observe(node);
+      }
+    },
+    [isLoading, isFetchingNextPage, hasNextPage, fetchNextPage]
+  );
+
+  useEffect(() => {
+    return () => {
+      if (observerTarget.current) {
+        observerTarget.current.disconnect();
+      }
+    };
+  }, []);
 
   return (
     <div className="flex flex-col gap-6">
@@ -61,22 +108,39 @@ export default function ExercisesDropdownButton({
             />
 
             <ul className="flex flex-col max-h-64 overflow-y-auto">
-              {items.map((exercise) => (
-                <li
-                  key={exercise.exerciseId}
-                  onClick={() => {
-                    onSelectExercise(exercise.exerciseId);
-                    setSearch("");
-                    setOpen(false);
-                  }}
-                  className="cursor-pointer px-4 py-2 text-sm rounded-lg hover:bg-fitlog-100"
-                >
-                  {exercise.name}
+              {isLoading ? (
+                <li className="py-3 text-center text-xs text-gray-400">
+                  검색 중...
                 </li>
-              ))}
+              ) : exercises.length > 0 ? (
+                <>
+                  {exercises.map((exercise, index) => (
+                    <li
+                      key={exercise.exerciseId}
+                      ref={
+                        index === exercises.length - 1 ? lastElementRef : null
+                      }
+                      onClick={() => {
+                        onSelectExercise(exercise.exerciseId);
+                        setSearch("");
+                        setOpen(false);
+                      }}
+                      className="cursor-pointer px-4 py-2 text-sm rounded-lg hover:bg-fitlog-100"
+                    >
+                      {exercise.name}
+                    </li>
+                  ))}
 
-              {items.length === 0 && (
-                <li className="py-3 text-center text-xs text-gray-400">검색 결과가 없습니다</li>
+                  {isFetchingNextPage && (
+                    <li className="py-1 flex justify-center">
+                      <Loader2 className="h-4 w-4 text-gray-400 animate-spin" />
+                    </li>
+                  )}
+                </>
+              ) : (
+                <li className="py-3 text-center text-xs text-gray-400">
+                  검색 결과가 없습니다
+                </li>
               )}
             </ul>
           </PopoverContent>
@@ -85,11 +149,17 @@ export default function ExercisesDropdownButton({
 
       {/* 수정 하기 버튼 OR 설정 완료 버튼 */}
       {completed ? (
-        <ActionButton onClick={onToggleCompleted} className="w-full p-2 color-white text-md">
+        <ActionButton
+          onClick={onToggleCompleted}
+          className="w-full p-2 color-white text-md"
+        >
           수정 하기
         </ActionButton>
       ) : (
-        <ActionButton onClick={onToggleCompleted} className="w-full p-2 color-white text-md">
+        <ActionButton
+          onClick={onToggleCompleted}
+          className="w-full p-2 color-white text-md"
+        >
           설정 완료
         </ActionButton>
       )}

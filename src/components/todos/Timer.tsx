@@ -28,7 +28,7 @@ export default function Timer({ currentTodoId, date }: TimerProps) {
   const dispatch = useAppDispatch();
   const { isActive, duration, todoId } = useAppSelector((state) => state.timer);
 
-  // 이 타이머가 활성화되어야 하는지 확인
+  // 해당 타이머 활성화 여부
   const isThisTimerActive =
     isActive && (!currentTodoId || todoId === currentTodoId);
 

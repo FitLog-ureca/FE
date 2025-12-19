@@ -11,53 +11,48 @@ export default function TodosContainer() {
   const dispatch = useAppDispatch();
   const todosData = useAppSelector((state) => state.todos.data);
   const today = new Date().toISOString().split("T")[0];
-  const { data: apiData, isLoading, error } = useTodosByDate(today);
+  const { data: todosListData, isLoading, error } = useTodosByDate(today);
 
   // API 데이터가 변경되면 Redux에 저장
   useEffect(() => {
-    if (apiData) {
-      dispatch(setTodosData(apiData));
+    if (todosListData) {
+      dispatch(setTodosData(todosListData));
     }
-  }, [apiData, dispatch]);
+  }, [todosListData, dispatch]);
 
-  // Redux 상태를 운동별로 그룹화
+  // todos를 운동별로 그룹화
   const groupedTodos = useMemo(() => {
-    if (!todosData?.exercises) return [];
+    if (!todosData || !todosData.exercises || todosData.isDone) return [];
 
-    const grouped = todosData.exercises.reduce((acc, exercise) => {
-      const existing = acc.find(
-        (item) => item.exerciseId === exercise.exerciseId
-      );
+    const map = new Map<number, GroupedTodo>();
 
-      const setInfo = {
-        todoId: exercise.todoId,
-        setsNumber: exercise.setsNumber,
-        repsTarget: exercise.repsTarget,
-        weight: exercise.weight,
-        restTime: exercise.restTime,
-        isCompleted: exercise.isCompleted,
-      };
-
-      if (existing) {
-        existing.sets.push(setInfo);
-      } else {
-        acc.push({
-          exerciseId: exercise.exerciseId,
-          exerciseName: exercise.exerciseName,
-          sets: [setInfo],
+    todosData.exercises.forEach((item) => {
+      if (!map.has(item.workoutId)) {
+        map.set(item.workoutId, {
+          exerciseId: item.workoutId,
+          exerciseName: item.exerciseName,
+          sets: [],
         });
       }
 
-      return acc;
-    }, [] as GroupedTodo[]);
+      map.get(item.workoutId)!.sets.push({
+        todoId: item.todoId,
+        setsNumber: item.setsNumber,
+        repsTarget: item.repsTarget,
+        weight: item.weight,
+        restTime: item.restTime,
+        isCompleted: item.isCompleted,
+      });
+    });
 
-    // 각 운동의 세트를 번호순으로 정렬
+    const grouped = Array.from(map.values());
+
     grouped.forEach((todo) => {
       todo.sets.sort((a, b) => a.setsNumber - b.setsNumber);
     });
 
     return grouped;
-  }, [todosData?.exercises]);
+  }, [todosData]);
 
   if (isLoading) {
     return (

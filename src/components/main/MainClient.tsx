@@ -59,16 +59,20 @@ export default function MainClient() {
       <section className="flex min-h-0 flex-col">
         <div className="min-h-0 w-full overflow-y-auto md:h-full md:flex-1">
           {/* 날짜 선택 안 했을 때만 */}
-          {!selectedDate && !isLoading && !error && <Greeting username="준형" />}
+          {!selectedDate && !isLoading && !error && <Greeting />}
 
           {/* 날짜 선택 후 로딩 */}
           {selectedDate && isLoading && (
-            <p className="mt-10 text-center text-gray-400">운동 정보를 불러오는 중...</p>
+            <p className="mt-10 text-center text-gray-400">
+              운동 정보를 불러오는 중...
+            </p>
           )}
 
           {/* 날짜 선택 후 에러 */}
           {selectedDate && error && (
-            <p className="mt-10 text-center text-red-400">운동 정보를 불러오지 못했어요.</p>
+            <p className="mt-10 text-center text-red-400">
+              운동 정보를 불러오지 못했어요.
+            </p>
           )}
 
           {/* [과거 날짜] -> RecordList */}
@@ -84,6 +88,7 @@ export default function MainClient() {
           {/* [오늘 날짜 + 운동 완료] -> RecordList */}
           {selectedDate && data && isTodaySelected && data.isDone && (
             <RecordList exercises={data.exercises} totalCalories={data.totalCalories} />
+
           )}
 
           {/* [미래 날짜] -> GoalList (운동 시작 버튼 X) */}

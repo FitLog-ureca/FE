@@ -26,7 +26,7 @@ export default function Checkbox({
           "border-input bg-background text-transparent",
           "peer-checked:bg-fitlog-500 peer-checked:border-fitlog-500 peer-checked:text-white",
           "peer-focus-visible:ring-[3px] peer-focus-visible:ring-ring/50",
-          "peer-disabled:cursor-not-allowed peer-disabled:opacity-50",
+          "peer-disabled:opacity-50",
           className
         )}
       >
