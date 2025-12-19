@@ -2,7 +2,7 @@ export interface RecordSet {
   todoId: number;
   setsNumber: number;
   repsTarget: number;
-  weight: number;
+  weight: number | null;
   isCompleted: boolean;
 }
 
