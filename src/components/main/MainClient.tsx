@@ -81,7 +81,7 @@ export default function MainClient() {
             <GoalList key={selectedDate} goals={goalModels} selectedDate={selectedDate} />
           )}
 
-          {/* [오늘 날짜] + 운동 완료] -> RecordList */}
+          {/* [오늘 날짜 + 운동 완료] -> RecordList */}
           {selectedDate && data && isTodaySelected && data.isDone && (
             <RecordList exercises={data.exercises} totalCalories={data.totalCalories} />
           )}

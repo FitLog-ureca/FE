@@ -31,7 +31,7 @@ export default function GoalHeader({ completed, selectedDate }: GoalHeaderProps)
       </div>
 
       <ActionButton
-        onClick={completed ? handleStartWorkout : undefined}
+        onClick={showStartButton ? handleStartWorkout : undefined}
         disabled={!showStartButton}
         className={`
           p-3 color-white text-md
