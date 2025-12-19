@@ -16,7 +16,7 @@ export function useUpdateSet(selectedDate: string) {
 
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: ["todos", selectedDate],
+        queryKey: ["exercises", selectedDate],
       });
     },
   });

@@ -3,7 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 
 export function useTodosByDate(date: string) {
   return useQuery({
-    queryKey: ["todos", date],
+    queryKey: ["exercises", date],
     queryFn: () => getTodoByDateApi(date),
     staleTime: 1000 * 60 * 5, // 5분
     gcTime: 1000 * 60 * 10,
