@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import greetingImg from "@/assets/images/greeting.png";
+
 import { useGetProfile } from "@/lib/tanstack/query/profile";
 
 export default function Greeting() {

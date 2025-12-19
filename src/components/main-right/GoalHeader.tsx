@@ -1,17 +1,19 @@
 import ActionButton from "@/components/ui/ActionButton";
+import { GoalHeaderProps } from "@/types/todoMain";
 import { useRouter } from "next/navigation";
-
-interface GoalHeaderProps {
-  completed: boolean;
-  selectedDate: string; // YYYY-MM-DD
-}
+import { isToday } from "@/lib/date";
 
 export default function GoalHeader({ completed, selectedDate }: GoalHeaderProps) {
   const router = useRouter();
-  
   const date = new Date(selectedDate);
-        
+  const showStartButton = completed && isToday(selectedDate);
+
   const handleStartWorkout = async () => {
+    if (!completed) {
+      alert("운동 설정을 완료해주세요.");
+      return;
+    }
+
     await fetch("/api/todos/start", { method: "POST" });
     router.push("/todos");
   };
@@ -28,14 +30,16 @@ export default function GoalHeader({ completed, selectedDate }: GoalHeaderProps)
         <h1 className="text-xl font-semibold"> 운동 목표</h1>
       </div>
 
-      {completed && (
-        <ActionButton
-          onClick={handleStartWorkout}
-          className="p-3 color-white text-md"
-        >
-          운동 시작
-        </ActionButton>
-      )}
+      <ActionButton
+        onClick={showStartButton ? handleStartWorkout : undefined}
+        disabled={!showStartButton}
+        className={`
+          p-3 color-white text-md
+          ${showStartButton ? "visible" : "invisible"}
+        `}
+      >
+        운동 시작
+      </ActionButton>
     </div>
   );
 }

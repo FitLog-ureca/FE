@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import Input from "@/components/ui/Input";
 import CloseButton from "@/components/ui/CloseButton";
 import { SetItemProps } from "@/types/todoMain";
@@ -10,6 +10,9 @@ export default function SetItem({
   onRemoveSet,
   onUpdateSet,
 }: SetItemProps) {
+  const [reps, setReps] = useState<number | "">(set.repsTarget);
+  const [weight, setWeight] = useState<number | "">(set.weight);
+
   return (
     <div className="flex justify-between items-center gap-4 pb-2">
       {/* 세트 번호 */}
@@ -18,25 +21,27 @@ export default function SetItem({
       <Input
         type="number"
         className="w-16 flex-1 text-center disabled:opacity-100 disabled:bg-white disabled:text-black disabled:cursor-default"
-        value={set.repsTarget}
+        value={reps}
         disabled={completed}
-        onChange={(e) =>
-          onUpdateSet(goalId, set.id, {
-            repsTarget: e.target.value === "" ? "" : Number(e.target.value),
-          })
-        }
+        onChange={(e) => setReps(e.target.value === "" ? "" : Number(e.target.value))}
+        onBlur={() => {
+          if (reps !== set.repsTarget) {
+            onUpdateSet(goalId, set.id, { repsTarget: reps });
+          }
+        }}
       />
       회{/* 중량 입력 */}
       <Input
         type="number"
         className="w-16 flex-1 text-center disabled:opacity-100 disabled:bg-white disabled:text-black disabled:cursor-default"
-        value={set.weight}
+        value={weight}
         disabled={completed}
-        onChange={(e) =>
-          onUpdateSet(goalId, set.id, {
-            weight: e.target.value === "" ? "" : Number(e.target.value),
-          })
-        }
+        onChange={(e) => setWeight(e.target.value === "" ? "" : Number(e.target.value))}
+        onBlur={() => {
+          if (weight !== set.weight) {
+            onUpdateSet(goalId, set.id, { weight });
+          }
+        }}
       />
       kg
       {/* 세트 삭제 */}

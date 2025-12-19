@@ -25,7 +25,6 @@ export default function ActionButton({
         variant === "secondary" &&
           "bg-white text-black border border-fitlog-beige hover:bg-gray-100",
         disabled && "bg-fitlog-700 text-gray-300 cursor-not-allowed",
-
         error && "bg-red-400 hover:bg-red-500 text-white",
         className
       )}

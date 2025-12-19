@@ -4,17 +4,12 @@ import React, { useState } from "react";
 import GoalHeader from "@/components/main-right/GoalHeader";
 import SetList from "@/components/main-right/SetList";
 import ExercisesDropdownButton from "@/components/main-right/ExercisesDropdownButton";
-import { GoalType, SetUpdatePayload } from "@/types/todoMain";
+import { GoalListProps, SetUpdatePayload } from "@/types/todoMain";
 import { useCreateTodo } from "@/lib/tanstack/mutation/createTodo";
 import { useAddSet } from "@/lib/tanstack/mutation/addSet";
 import { useDeleteTodo } from "@/lib/tanstack/mutation/deleteTodo";
 import { useDeleteWorkout } from "@/lib/tanstack/mutation/deleteWorkout";
 import { useUpdateSet } from "@/lib/tanstack/mutation/updateSet";
-
-interface GoalListProps {
-  goals: GoalType[];
-  selectedDate: string;
-}
 
 export default function GoalList({ goals, selectedDate }: GoalListProps) {
   const [completed, setCompleted] = useState(false);

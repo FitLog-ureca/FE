@@ -1,10 +1,10 @@
 import { cn } from "@/lib/cn";
 import { CheckIcon } from "lucide-react";
 
-interface CheckboxProps extends Omit<
+type CheckboxProps = Omit<
   React.InputHTMLAttributes<HTMLInputElement>,
   "type"
-> {}
+>;
 
 export default function Checkbox({
   className,

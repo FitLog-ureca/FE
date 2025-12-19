@@ -8,27 +8,21 @@ import Greeting from "@/components/main-right/Greeting";
 import RecordList from "@/components/main-right/RecordList";
 import { useExercisesByDate } from "@/lib/tanstack/query/exerciseRecord";
 import { GoalType } from "@/types/todoMain";
+import { isToday, isPast, isFuture } from "@/lib/date";
 
 export default function MainClient() {
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
 
   const { data, isLoading, error } = useExercisesByDate(selectedDate);
 
+  /* RIGHT 화면 분기 조건 */
+  const isTodaySelected = selectedDate && isToday(selectedDate);
+  const isPastSelected = selectedDate && isPast(selectedDate);
+  const isFutureSelected = selectedDate && isFuture(selectedDate);
+
   /** 서버 데이터 → GoalList용 데이터 변환 */
   const goalModels: GoalType[] = useMemo(() => {
     if (!data || data.isDone) return [];
-    data.exercises.forEach((item) => {
-      console.log(
-        "todoId:",
-        item.todoId,
-        "workoutId:",
-        item.workoutId,
-        "exercise:",
-        item.exerciseName,
-        "set:",
-        item.setsNumber
-      );
-    });
 
     const map = new Map<number, GoalType>();
 
@@ -54,7 +48,7 @@ export default function MainClient() {
   }, [data]);
 
   return (
-    <div className="md:h-[calc(100vh-72px)] grid w-full max-w-6xl grid-cols-1 gap-16 py-24 md:grid-cols-2">
+    <div className="md:h-[calc(100vh-72px)] grid w-full max-w-6xl grid-cols-1 gap-16 py-26 md:grid-cols-2">
       {/* LEFT */}
       <section className="mt-[72px] flex flex-col items-center">
         <Calendar className="w-full" onSelectDate={setSelectedDate} />
@@ -81,21 +75,25 @@ export default function MainClient() {
             </p>
           )}
 
-          {/* 날짜 선택 + 운동 미완료 -> GoalList */}
-          {selectedDate && data && !data.isDone && (
-            <GoalList
-              key={selectedDate}
-              goals={goalModels}
-              selectedDate={selectedDate}
-            />
+          {/* [과거 날짜] -> RecordList */}
+          {selectedDate && data && isPastSelected && (
+            <RecordList exercises={data.exercises} totalCalories={data.totalCalories} />
           )}
 
-          {/* 날짜 선택 + 운동 완료 -> RecordList */}
-          {selectedDate && data && data.isDone && (
-            <RecordList
-              exercises={data.exercises}
-              totalCalories={data.totalCalories}
-            />
+          {/* [오늘 날짜 + 운동 미완료] -> GoalList (운동 시작 버튼 O) */}
+          {selectedDate && data && isTodaySelected && !data.isDone && (
+            <GoalList key={selectedDate} goals={goalModels} selectedDate={selectedDate} />
+          )}
+
+          {/* [오늘 날짜 + 운동 완료] -> RecordList */}
+          {selectedDate && data && isTodaySelected && data.isDone && (
+            <RecordList exercises={data.exercises} totalCalories={data.totalCalories} />
+
+          )}
+
+          {/* [미래 날짜] -> GoalList (운동 시작 버튼 X) */}
+          {selectedDate && data && isFutureSelected && (
+            <GoalList key={selectedDate} goals={goalModels} selectedDate={selectedDate} />
           )}
         </div>
       </section>
