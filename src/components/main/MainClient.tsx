@@ -58,12 +58,19 @@ export default function MainClient() {
         map.set(item.workoutId, {
           workoutId: item.workoutId,
           exerciseName: item.exerciseName,
-          burnedCalories: item.burnedCalories ?? null,
+          burnedCalories: 0,
           sets: [],
         });
       }
 
-      map.get(item.workoutId)!.sets.push({
+      const record = map.get(item.workoutId)!;
+
+      // 완료된 세트만 칼로리 누적 === isCompleted가 true일 때만
+      if (item.isCompleted && item.burnedCalories) {
+        record.burnedCalories += item.burnedCalories;
+      }
+
+      record.sets.push({
         todoId: item.todoId,
         setsNumber: item.setsNumber,
         repsTarget: item.repsTarget,

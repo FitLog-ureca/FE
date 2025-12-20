@@ -9,6 +9,6 @@ export interface RecordSet {
 export interface RecordWorkout {
   workoutId: number;
   exerciseName: string;
-  burnedCalories: number | null;
+  burnedCalories: number;
   sets: RecordSet[];
 }
