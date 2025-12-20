@@ -5,9 +5,10 @@ import ActionButton from "@/components/ui/ActionButton";
 interface RecordHeaderProps {
   selectedDate?: string;
   totalCalories: number;
+  isDone: boolean;
 }
 
-export default function RecordHeader({ selectedDate, totalCalories }: RecordHeaderProps) {
+export default function RecordHeader({ selectedDate, totalCalories, isDone }: RecordHeaderProps) {
   const date = selectedDate ? new Date(selectedDate) : null;
 
   return (
@@ -26,10 +27,15 @@ export default function RecordHeader({ selectedDate, totalCalories }: RecordHead
         </div>
 
         <div className="flex gap-4">
-          <ActionButton className="p-3 text-md cursor-pointer pointer-events-none">운동 완료!</ActionButton>
-          <ActionButton className="p-3 text-md bg-white text-fitlog-500 hover:bg-fitlog-500 hover:text-white border-fitlog-500">
-            운동 다시 하기
+          <ActionButton
+            className={`p-3 text-md  cursor-pointer pointer-events-none ${isDone ? "opacity-100" : "opacity-0 pointer-events-none"}
+  `}
+          >
+            운동 완료!
           </ActionButton>
+          {/* <ActionButton className="p-3 text-md bg-white text-fitlog-500 hover:bg-fitlog-500 hover:text-white border-fitlog-500">
+            운동 다시 하기
+          </ActionButton> */}
         </div>
       </section>
 

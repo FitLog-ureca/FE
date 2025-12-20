@@ -8,12 +8,18 @@ interface RecordListProps {
   records: RecordWorkout[];
   totalCalories: number;
   selectedDate?: string;
+  isDone: boolean;
 }
 
-export default function RecordList({ records, totalCalories, selectedDate }: RecordListProps) {
+export default function RecordList({
+  records,
+  totalCalories,
+  selectedDate,
+  isDone,
+}: RecordListProps) {
   return (
     <div className="w-full flex flex-col gap-6">
-      <RecordHeader selectedDate={selectedDate} totalCalories={totalCalories} />
+      <RecordHeader selectedDate={selectedDate} totalCalories={totalCalories} isDone={isDone} />
 
       {records.map((record) => (
         <RecordSetList key={record.workoutId} record={record} />

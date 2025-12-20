@@ -112,6 +112,7 @@ export default function MainClient() {
               records={recordModels}
               totalCalories={data.totalCalories}
               selectedDate={selectedDate}
+              isDone={data.isDone}
             />
           )}
 
@@ -126,6 +127,7 @@ export default function MainClient() {
               records={recordModels}
               totalCalories={data.totalCalories}
               selectedDate={selectedDate}
+              isDone={data.isDone}
             />
           )}
 
