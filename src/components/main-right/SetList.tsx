@@ -17,7 +17,7 @@ export default function SetList({
 }: SetListProps) {
   return (
     <div className="SetList">
-      <section className="w-full h-auto rounded-xl p-4 border border-fitlog-beige flex flex-col gap-2 bg-white shadow">
+      <section className="w-full h-auto rounded-xl p-4 border border-fitlog-beige flex flex-col gap-2 bg-white shadow-fitlog-btn-sm">
         {/* 운동 제목 */}
         <div className="flex justify-between items-center">
           <h1 className="text-md font-semibold">{goal.exercise}</h1>

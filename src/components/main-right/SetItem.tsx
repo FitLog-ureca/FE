@@ -14,7 +14,7 @@ export default function SetItem({
   const [weight, setWeight] = useState<number | "">(set.weight);
 
   return (
-    <div className="flex justify-between items-center gap-4 pb-2">
+    <div className="flex justify-between items-center gap-4">
       {/* 세트 번호 */}
       <span className="text-md w-10">Set {set.setsNumber}</span>
       {/* 반복 횟수 입력 */}

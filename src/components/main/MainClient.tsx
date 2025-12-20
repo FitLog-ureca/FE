@@ -49,7 +49,7 @@ export default function MainClient() {
   }, [data]);
 
   const recordModels: RecordWorkout[] = useMemo(() => {
-    if (!data || !data.isDone) return [];
+    if (!data) return [];
 
     const map = new Map<number, RecordWorkout>();
 
@@ -58,7 +58,7 @@ export default function MainClient() {
         map.set(item.workoutId, {
           workoutId: item.workoutId,
           exerciseName: item.exerciseName,
-          burnedCalories: item.burnedCalories ?? 0,
+          burnedCalories: item.burnedCalories ?? null,
           sets: [],
         });
       }
@@ -67,7 +67,7 @@ export default function MainClient() {
         todoId: item.todoId,
         setsNumber: item.setsNumber,
         repsTarget: item.repsTarget,
-        weight: item.weight,
+        weight: item.weight ?? null,
         isCompleted: item.isCompleted,
       });
     });
@@ -80,7 +80,7 @@ export default function MainClient() {
       {/* LEFT */}
       <section className="mt-[72px] flex flex-col items-center">
         <Calendar className="w-full" onSelectDate={setSelectedDate} />
-        <FillLevel className="w-full pt-6" />
+        <FillLevel className="w-full mt-6" />
       </section>
 
       {/* RIGHT */}

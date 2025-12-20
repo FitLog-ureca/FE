@@ -26,17 +26,18 @@ export default function RecordHeader({ selectedDate, totalCalories }: RecordHead
         </div>
 
         <div className="flex gap-4">
-          <ActionButton className="p-3 text-md cursor-none">운동 완료!</ActionButton>
-          <ActionButton className="p-3 text-md cursor-none bg-white text-fitlog-500">
+          <ActionButton className="p-3 text-md cursor-pointer pointer-events-none">운동 완료!</ActionButton>
+          <ActionButton className="p-3 text-md bg-white text-fitlog-500 hover:bg-fitlog-500 hover:text-white border-fitlog-500">
             운동 다시 하기
           </ActionButton>
         </div>
       </section>
 
       <section className="w-full flex gap-2 rounded-xl p-4 border border-fitlog-beige bg-white shadow-fitlog-btn-sm">
-        <span>총 소모 칼로리</span>
+        <span className="font-semibold">총 소모 칼로리</span>
         <span>-</span>
-        <span>{totalCalories} <span className="text-fitlog-500">kcal</span></span>
+        <span className="font-semibold text-fitlog-500">{totalCalories}</span>
+        <span>kcal</span>
       </section>
     </div>
   );
