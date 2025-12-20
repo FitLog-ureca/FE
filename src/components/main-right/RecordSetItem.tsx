@@ -13,7 +13,7 @@ export default function RecordSetItem({ set }: { set: RecordSet }) {
       <Input
         type="number"
         className={`w-16 py-2 flex-1 text-center disabled:opacity-100 disabled:bg-white disabled:text-black disabled:cursor-default ${set.isCompleted ? "border-fitlog-300" : ""}`}
-        value={set.repsTarget}
+        value={set.repsTarget ?? ""}
         disabled
       />
       <span>회</span>
