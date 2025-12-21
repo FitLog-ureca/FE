@@ -25,9 +25,11 @@ export function Calendar({ className, onSelectDate }: CalendarProps) {
 
   // dateKey → intensity 맵
   const intensityMap = new Map<string, number>();
-
+  const isDoneMap = new Map<string, boolean>();
+  
   summary?.forEach((item) => {
     intensityMap.set(item.date, calcIntensity(item.completedSets, item.totalSets));
+    isDoneMap.set(item.date, item.isDone);
   });
 
   const [today] = useState(() => {
@@ -69,6 +71,7 @@ export function Calendar({ className, onSelectDate }: CalendarProps) {
         today={today}
         onSelect={handleSelectDate}
         intensity={intensityMap.get(dateKey) ?? 0}
+        isDone={isDoneMap.get(dateKey) ?? false}
       />
     );
   }
@@ -88,6 +91,7 @@ export function Calendar({ className, onSelectDate }: CalendarProps) {
         today={today}
         onSelect={handleSelectDate}
         intensity={intensityMap.get(dateKey) ?? 0}
+        isDone={isDoneMap.get(dateKey) ?? false}
       />
     );
   }
@@ -107,6 +111,7 @@ export function Calendar({ className, onSelectDate }: CalendarProps) {
         today={today}
         onSelect={handleSelectDate}
         intensity={intensityMap.get(dateKey) ?? 0}
+        isDone={isDoneMap.get(dateKey) ?? false}
       />
     );
   }

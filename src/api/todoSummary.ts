@@ -4,6 +4,7 @@ export interface TodoDailySummary {
   date: string;     // yyyy-mm-dd
   totalSets: number;
   completedSets: number;
+  isDone: boolean;
 }
 
 export interface TodoMonthlySummaryResponse {

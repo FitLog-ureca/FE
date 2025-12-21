@@ -6,7 +6,7 @@ export function useTodoMonthlySummary(year: number, month: number) {
     queryKey: ["todos", "summary", year, month],
     queryFn: async () => {
       const res = await getTodoMonthlySummary(year, month);
-      return res.summaries; // ⭐ 핵심
+      return res.summaries;
     },
     enabled: !!year && month >= 0,
   });

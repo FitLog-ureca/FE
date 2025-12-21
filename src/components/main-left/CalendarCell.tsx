@@ -9,6 +9,7 @@ interface CalendarCellProps {
   today: Date;
   onSelect: (date: Date) => void;
   intensity?: number;
+  isDone?: boolean;
 }
 
 export default function CalendarCell({
@@ -18,6 +19,7 @@ export default function CalendarCell({
   today,
   onSelect,
   intensity = 0,
+  isDone = false,
 }: CalendarCellProps) {
   const isToday = date.toDateString() === today.toDateString();
   const isSelected = selectedDate && selectedDate.toDateString() === date.toDateString();
@@ -62,7 +64,7 @@ export default function CalendarCell({
       )}
 
       {/* 운동 완료 체크 표시 */}
-      {intensity > 0 && (
+      {isDone && (
         <div className="absolute top-1 right-1 text-[10px] font-bold text-white">✔</div>
       )}
     </button>
