@@ -14,13 +14,13 @@ export default function SetItem({
   const [weight, setWeight] = useState<number | "">(set.weight);
 
   return (
-    <div className="flex justify-between items-center gap-4 pb-2">
+    <div className="flex justify-between items-center gap-4">
       {/* 세트 번호 */}
-      <h2 className="font-bold text-md w-10">Set {set.setsNumber}</h2>
+      <span className="text-md w-10">Set {set.setsNumber}</span>
       {/* 반복 횟수 입력 */}
       <Input
         type="number"
-        className="w-16 flex-1 text-center disabled:opacity-100 disabled:bg-white disabled:text-black disabled:cursor-default"
+        className="w-16 py-2 flex-1 text-center disabled:opacity-100 disabled:bg-white disabled:text-black disabled:cursor-default"
         value={reps}
         disabled={completed}
         onChange={(e) => setReps(e.target.value === "" ? "" : Number(e.target.value))}
@@ -30,10 +30,11 @@ export default function SetItem({
           }
         }}
       />
-      회{/* 중량 입력 */}
+      <span>회</span>
+      {/* 중량 입력 */}
       <Input
         type="number"
-        className="w-16 flex-1 text-center disabled:opacity-100 disabled:bg-white disabled:text-black disabled:cursor-default"
+        className="w-16 py-2 flex-1 text-center disabled:opacity-100 disabled:bg-white disabled:text-black disabled:cursor-default"
         value={weight}
         disabled={completed}
         onChange={(e) => setWeight(e.target.value === "" ? "" : Number(e.target.value))}

@@ -6,30 +6,31 @@ import { cn } from "@/lib/cn";
 import YearMonthPicker from "@/components/main-left/YearMonthPicker";
 import CalendarCell from "@/components/main-left/CalendarCell";
 import { CalendarProps } from "@/types/calendar";
-
-// 운동 강도 Mock 데이터
-export const workoutIntensity: Record<string, number> = {
-  "2025-11-30": 3,
-  "2025-12-01": 3,
-  "2025-12-02": 2,
-  "2025-12-03": 1,
-  "2025-12-04": 3,
-  "2025-12-05": 2,
-  "2025-12-06": 3,
-  "2025-12-07": 1,
-  "2025-12-09": 3,
-};
+import { useTodoMonthlySummary } from "@/lib/tanstack/query/todoMonthlySummary";
+import { calcIntensity } from "@/lib/calendarIntensity";
 
 export function Calendar({ className, onSelectDate }: CalendarProps) {
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
 
   const year = currentMonth.getFullYear();
-  const month = currentMonth.getMonth();
+  const monthIndex = currentMonth.getMonth(); // 0~11 (UI / Date 계산용)
+  const apiMonth = monthIndex + 1; // 1~12 (API 요청용)
 
-  const firstDayOfMonth = new Date(year, month, 1);
+  const { data: summary } = useTodoMonthlySummary(year, apiMonth);
+
+  const firstDayOfMonth = new Date(year, monthIndex, 1);
   const startDay = firstDayOfMonth.getDay();
-  const daysInMonth = new Date(year, month + 1, 0).getDate();
+  const daysInMonth = new Date(year, monthIndex + 1, 0).getDate();
+
+  // dateKey → intensity 맵
+  const intensityMap = new Map<string, number>();
+  const isDoneMap = new Map<string, boolean>();
+
+  summary?.forEach((item) => {
+    intensityMap.set(item.date, calcIntensity(item.completedSets, item.totalSets));
+    isDoneMap.set(item.date, item.isDone);
+  });
 
   const [today] = useState(() => {
     const d = new Date();
@@ -58,7 +59,9 @@ export function Calendar({ className, onSelectDate }: CalendarProps) {
 
   /* 앞쪽 빈 칸 (이전달) */
   for (let i = 0; i < startDay; i++) {
-    const prevDate = new Date(year, month, i - startDay + 1);
+    const prevDate = new Date(year, monthIndex, i - startDay + 1);
+    const dateKey = formatDate(prevDate);
+
     cells.push(
       <CalendarCell
         key={`prev-${i}`}
@@ -67,13 +70,18 @@ export function Calendar({ className, onSelectDate }: CalendarProps) {
         selectedDate={selectedDate}
         today={today}
         onSelect={handleSelectDate}
+        intensity={intensityMap.get(dateKey) ?? 0}
+        isDone={isDoneMap.get(dateKey) ?? false}
       />
     );
   }
 
   /* 이번 달 날짜 */
   for (let day = 1; day <= daysInMonth; day++) {
-    const date = new Date(year, month, day);
+    const date = new Date(year, monthIndex, day);
+    const dateKey = formatDate(date);
+    // const dateKey = `${year}-${String(monthIndex + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
+
     cells.push(
       <CalendarCell
         key={day}
@@ -82,6 +90,8 @@ export function Calendar({ className, onSelectDate }: CalendarProps) {
         selectedDate={selectedDate}
         today={today}
         onSelect={handleSelectDate}
+        intensity={intensityMap.get(dateKey) ?? 0}
+        isDone={isDoneMap.get(dateKey) ?? false}
       />
     );
   }
@@ -89,7 +99,9 @@ export function Calendar({ className, onSelectDate }: CalendarProps) {
   /* 뒤쪽 칸 (다음달) */
   const remaining = cellCount - cells.length;
   for (let i = 1; i <= remaining; i++) {
-    const nextDate = new Date(year, month + 1, i);
+    const nextDate = new Date(year, monthIndex + 1, i);
+    const dateKey = formatDate(nextDate);
+
     cells.push(
       <CalendarCell
         key={`next-${i}`}
@@ -98,6 +110,8 @@ export function Calendar({ className, onSelectDate }: CalendarProps) {
         selectedDate={selectedDate}
         today={today}
         onSelect={handleSelectDate}
+        intensity={intensityMap.get(dateKey) ?? 0}
+        isDone={isDoneMap.get(dateKey) ?? false}
       />
     );
   }
@@ -105,11 +119,13 @@ export function Calendar({ className, onSelectDate }: CalendarProps) {
   const weekDays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
   return (
-    <div className={cn("w-full rounded-xl bg-white p-6 shadow border border-fitlog-beige", className)}>
+    <div
+      className={cn("w-full rounded-xl bg-white p-6 shadow border border-fitlog-beige", className)}
+    >
       {/* 상단 월 이동 */}
       <div className="mb-5 flex items-center justify-between">
         <button
-          onClick={() => setCurrentMonth(new Date(year, month - 1, 1))}
+          onClick={() => setCurrentMonth(new Date(year, monthIndex - 1, 1))}
           className={cn(
             "group flex h-10 w-10 items-center justify-center rounded-full",
             "hover:bg-fitlog-100 transition-colors"
@@ -120,12 +136,12 @@ export function Calendar({ className, onSelectDate }: CalendarProps) {
 
         <YearMonthPicker
           year={year}
-          month={month}
+          month={monthIndex}
           onSelect={(y, m) => setCurrentMonth(new Date(y, m, 1))}
         />
 
         <button
-          onClick={() => setCurrentMonth(new Date(year, month + 1, 1))}
+          onClick={() => setCurrentMonth(new Date(year, monthIndex + 1, 1))}
           className={cn(
             "group flex h-10 w-10 items-center justify-center rounded-full ",
             "hover:bg-fitlog-100 transition-colors"
@@ -138,7 +154,7 @@ export function Calendar({ className, onSelectDate }: CalendarProps) {
       {/* 요일 헤더 */}
       <div className="grid grid-cols-7 gap-2 mb-2">
         {weekDays.map((day) => (
-          <div key={day} className="text-center text-xs font-semibold text-gray-500">
+          <div key={day} className="text-center text-sm font-semibold text-gray-500">
             {day}
           </div>
         ))}

@@ -18,7 +18,7 @@ export default function ActionButton({
       disabled={disabled}
       {...props}
       className={cn(
-        "rounded-xl bg-fitlog-500 text-white text-sm transition-colors shadow-fitlog-btn cursor-pointer hover:bg-fitlog-700",
+        "rounded-xl bg-fitlog-500 text-white text-sm transition-colors shadow-fitlog-btn-sm cursor-pointer hover:bg-fitlog-700",
 
         // variant에 따른 스타일
         variant === "primary" && "bg-fitlog-500 text-white hover:bg-fitlog-700",

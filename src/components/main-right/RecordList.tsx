@@ -1,33 +1,28 @@
 "use client";
 
-import { ExerciseItem } from "@/types/exercise";
+import RecordHeader from "@/components/main-right/RecordHeader";
+import RecordSetList from "@/components/main-right/RecordSetList";
+import { RecordWorkout } from "@/types/record";
 
 interface RecordListProps {
-  exercises: ExerciseItem[];
+  records: RecordWorkout[];
   totalCalories: number;
+  selectedDate?: string;
+  isDone: boolean;
 }
 
 export default function RecordList({
-  exercises,
+  records,
   totalCalories,
+  selectedDate,
+  isDone,
 }: RecordListProps) {
   return (
-    <div className="flex flex-col gap-4">
-      <h2 className="text-lg font-bold">
-        총 소모 칼로리: {totalCalories} kcal
-      </h2>
+    <div className="w-full flex flex-col gap-6">
+      <RecordHeader selectedDate={selectedDate} totalCalories={totalCalories} isDone={isDone} />
 
-      {exercises.map((item) => (
-        <div key={item.todoId} className="rounded-lg border p-4">
-          <p className="font-semibold">{item.exerciseName}</p>
-          <p>
-            {item.setsNumber}세트 · {item.repsTarget}회 ·{" "}
-            {item.weight ?? 0}kg
-          </p>
-          <p className="text-sm text-gray-500">
-            소모: {item.burnedCalories ?? 0} kcal
-          </p>
-        </div>
+      {records.map((record) => (
+        <RecordSetList key={record.workoutId} record={record} />
       ))}
     </div>
   );

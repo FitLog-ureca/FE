@@ -9,6 +9,7 @@ import RecordList from "@/components/main-right/RecordList";
 import { useExercisesByDate } from "@/lib/tanstack/query/exerciseRecord";
 import { GoalType } from "@/types/todoMain";
 import { isToday, isPast, isFuture } from "@/lib/date";
+import { RecordWorkout } from "@/types/record";
 
 export default function MainClient() {
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
@@ -47,37 +48,73 @@ export default function MainClient() {
     return Array.from(map.values());
   }, [data]);
 
+  const recordModels: RecordWorkout[] = useMemo(() => {
+    if (!data) return [];
+
+    const map = new Map<number, RecordWorkout>();
+
+    data.exercises.forEach((item) => {
+      if (!map.has(item.workoutId)) {
+        map.set(item.workoutId, {
+          workoutId: item.workoutId,
+          exerciseName: item.exerciseName,
+          burnedCalories: 0,
+          sets: [],
+        });
+      }
+
+      const record = map.get(item.workoutId)!;
+
+      // 완료된 세트만 칼로리 누적 === isCompleted가 true일 때만
+      if (item.isCompleted && item.burnedCalories) {
+        record.burnedCalories += item.burnedCalories;
+      }
+
+      record.sets.push({
+        todoId: item.todoId,
+        setsNumber: item.setsNumber,
+        repsTarget: item.repsTarget,
+        weight: item.weight ?? null,
+        restTime: item.restTime ?? null,
+        isCompleted: item.isCompleted,
+      });
+    });
+
+    return Array.from(map.values());
+  }, [data]);
+
   return (
     <div className="md:h-[calc(100vh-72px)] grid w-full max-w-6xl grid-cols-1 gap-16 py-26 md:grid-cols-2">
       {/* LEFT */}
-      <section className="mt-[72px] flex flex-col items-center">
+      <section className="mt-[72px] flex flex-col items-center pb-6">
         <Calendar className="w-full" onSelectDate={setSelectedDate} />
-        <FillLevel className="w-full pt-6" />
+        <FillLevel className="w-full mt-6" />
       </section>
 
       {/* RIGHT */}
       <section className="flex min-h-0 flex-col">
-        <div className="min-h-0 w-full overflow-y-auto md:h-full md:flex-1">
+        <div className="min-h-0 w-full overflow-y-auto md:h-full md:flex-1 pb-6">
           {/* 날짜 선택 안 했을 때만 */}
           {!selectedDate && !isLoading && !error && <Greeting />}
 
           {/* 날짜 선택 후 로딩 */}
           {selectedDate && isLoading && (
-            <p className="mt-10 text-center text-gray-400">
-              운동 정보를 불러오는 중...
-            </p>
+            <p className="mt-10 text-center text-gray-400">운동 정보를 불러오는 중...</p>
           )}
 
           {/* 날짜 선택 후 에러 */}
           {selectedDate && error && (
-            <p className="mt-10 text-center text-red-400">
-              운동 정보를 불러오지 못했어요.
-            </p>
+            <p className="mt-10 text-center text-red-400">운동 정보를 불러오지 못했어요.</p>
           )}
 
           {/* [과거 날짜] -> RecordList */}
           {selectedDate && data && isPastSelected && (
-            <RecordList exercises={data.exercises} totalCalories={data.totalCalories} />
+            <RecordList
+              records={recordModels}
+              totalCalories={data.totalCalories}
+              selectedDate={selectedDate}
+              isDone={data.isDone}
+            />
           )}
 
           {/* [오늘 날짜 + 운동 미완료] -> GoalList (운동 시작 버튼 O) */}
@@ -87,8 +124,12 @@ export default function MainClient() {
 
           {/* [오늘 날짜 + 운동 완료] -> RecordList */}
           {selectedDate && data && isTodaySelected && data.isDone && (
-            <RecordList exercises={data.exercises} totalCalories={data.totalCalories} />
-
+            <RecordList
+              records={recordModels}
+              totalCalories={data.totalCalories}
+              selectedDate={selectedDate}
+              isDone={data.isDone}
+            />
           )}
 
           {/* [미래 날짜] -> GoalList (운동 시작 버튼 X) */}

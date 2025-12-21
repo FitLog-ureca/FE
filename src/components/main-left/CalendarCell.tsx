@@ -1,7 +1,6 @@
 "use client";
 
 import { cn } from "@/lib/cn";
-import { workoutIntensity } from "@/components/main-left/Calendar";
 
 interface CalendarCellProps {
   date: Date;
@@ -9,6 +8,8 @@ interface CalendarCellProps {
   selectedDate: Date | null;
   today: Date;
   onSelect: (date: Date) => void;
+  intensity?: number;
+  isDone?: boolean;
 }
 
 export default function CalendarCell({
@@ -17,16 +18,15 @@ export default function CalendarCell({
   selectedDate,
   today,
   onSelect,
+  intensity = 0,
+  isDone = false,
 }: CalendarCellProps) {
-  const dateKey =
-    `${date.getFullYear()}-` +
-    `${String(date.getMonth() + 1).padStart(2, "0")}-` +
-    `${String(date.getDate()).padStart(2, "0")}`;
-
-  const intensity = workoutIntensity[dateKey] || 0;
-
   const isToday = date.toDateString() === today.toDateString();
   const isSelected = selectedDate && selectedDate.toDateString() === date.toDateString();
+  
+  // 콘솔 디버깅용 - CalendarCell 렌더링 시점과 intensity 확인
+  // const debugKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
+  // console.log(debugKey, intensity);
 
   return (
     <button
@@ -64,7 +64,7 @@ export default function CalendarCell({
       )}
 
       {/* 운동 완료 체크 표시 */}
-      {intensity > 0 && (
+      {isDone && (
         <div className="absolute top-1 right-1 text-[10px] font-bold text-white">✔</div>
       )}
     </button>
