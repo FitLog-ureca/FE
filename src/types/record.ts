@@ -3,6 +3,7 @@ export interface RecordSet {
   setsNumber: number;
   repsTarget: number;
   weight: number | null;
+  restTime: number | null;
   isCompleted: boolean;
 }
 
