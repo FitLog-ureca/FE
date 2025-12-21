@@ -12,15 +12,16 @@ import { calcIntensity } from "@/lib/calendarIntensity";
 export function Calendar({ className, onSelectDate }: CalendarProps) {
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
-  
+
   const year = currentMonth.getFullYear();
-  const month = currentMonth.getMonth();
-  
-  const { data: summary } = useTodoMonthlySummary(year, month);
-  
-  const firstDayOfMonth = new Date(year, month, 1);
+  const monthIndex = currentMonth.getMonth(); // 0~11 (UI / Date 계산용)
+  const apiMonth = monthIndex + 1; // 1~12 (API 요청용)
+
+  const { data: summary } = useTodoMonthlySummary(year, apiMonth);
+
+  const firstDayOfMonth = new Date(year, monthIndex, 1);
   const startDay = firstDayOfMonth.getDay();
-  const daysInMonth = new Date(year, month + 1, 0).getDate();
+  const daysInMonth = new Date(year, monthIndex + 1, 0).getDate();
 
   // dateKey → intensity 맵
   const intensityMap = new Map<string, number>();
@@ -56,7 +57,7 @@ export function Calendar({ className, onSelectDate }: CalendarProps) {
 
   /* 앞쪽 빈 칸 (이전달) */
   for (let i = 0; i < startDay; i++) {
-    const prevDate = new Date(year, month, i - startDay + 1);
+    const prevDate = new Date(year, monthIndex, i - startDay + 1);
     const dateKey = formatDate(prevDate);
 
     cells.push(
@@ -74,8 +75,9 @@ export function Calendar({ className, onSelectDate }: CalendarProps) {
 
   /* 이번 달 날짜 */
   for (let day = 1; day <= daysInMonth; day++) {
-    const date = new Date(year, month, day);
+    const date = new Date(year, monthIndex, day);
     const dateKey = formatDate(date);
+    // const dateKey = `${year}-${String(monthIndex + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
 
     cells.push(
       <CalendarCell
@@ -93,7 +95,7 @@ export function Calendar({ className, onSelectDate }: CalendarProps) {
   /* 뒤쪽 칸 (다음달) */
   const remaining = cellCount - cells.length;
   for (let i = 1; i <= remaining; i++) {
-    const nextDate = new Date(year, month + 1, i);
+    const nextDate = new Date(year, monthIndex + 1, i);
     const dateKey = formatDate(nextDate);
 
     cells.push(
@@ -118,7 +120,7 @@ export function Calendar({ className, onSelectDate }: CalendarProps) {
       {/* 상단 월 이동 */}
       <div className="mb-5 flex items-center justify-between">
         <button
-          onClick={() => setCurrentMonth(new Date(year, month - 1, 1))}
+          onClick={() => setCurrentMonth(new Date(year, monthIndex - 1, 1))}
           className={cn(
             "group flex h-10 w-10 items-center justify-center rounded-full",
             "hover:bg-fitlog-100 transition-colors"
@@ -129,12 +131,12 @@ export function Calendar({ className, onSelectDate }: CalendarProps) {
 
         <YearMonthPicker
           year={year}
-          month={month}
+          month={monthIndex}
           onSelect={(y, m) => setCurrentMonth(new Date(y, m, 1))}
         />
 
         <button
-          onClick={() => setCurrentMonth(new Date(year, month + 1, 1))}
+          onClick={() => setCurrentMonth(new Date(year, monthIndex + 1, 1))}
           className={cn(
             "group flex h-10 w-10 items-center justify-center rounded-full ",
             "hover:bg-fitlog-100 transition-colors"

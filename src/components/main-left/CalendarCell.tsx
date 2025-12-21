@@ -21,6 +21,10 @@ export default function CalendarCell({
 }: CalendarCellProps) {
   const isToday = date.toDateString() === today.toDateString();
   const isSelected = selectedDate && selectedDate.toDateString() === date.toDateString();
+  
+  // 콘솔 디버깅용 - CalendarCell 렌더링 시점과 intensity 확인
+  // const debugKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
+  // console.log(debugKey, intensity);
 
   return (
     <button
