@@ -1,7 +1,6 @@
 "use client";
 
 import { cn } from "@/lib/cn";
-import { workoutIntensity } from "@/components/main-left/Calendar";
 
 interface CalendarCellProps {
   date: Date;
@@ -9,6 +8,7 @@ interface CalendarCellProps {
   selectedDate: Date | null;
   today: Date;
   onSelect: (date: Date) => void;
+  intensity?: number;
 }
 
 export default function CalendarCell({
@@ -17,14 +17,8 @@ export default function CalendarCell({
   selectedDate,
   today,
   onSelect,
+  intensity = 0,
 }: CalendarCellProps) {
-  const dateKey =
-    `${date.getFullYear()}-` +
-    `${String(date.getMonth() + 1).padStart(2, "0")}-` +
-    `${String(date.getDate()).padStart(2, "0")}`;
-
-  const intensity = workoutIntensity[dateKey] || 0;
-
   const isToday = date.toDateString() === today.toDateString();
   const isSelected = selectedDate && selectedDate.toDateString() === date.toDateString();
 
