@@ -26,7 +26,7 @@ export function Calendar({ className, onSelectDate }: CalendarProps) {
   // dateKey → intensity 맵
   const intensityMap = new Map<string, number>();
   const isDoneMap = new Map<string, boolean>();
-  
+
   summary?.forEach((item) => {
     intensityMap.set(item.date, calcIntensity(item.completedSets, item.totalSets));
     isDoneMap.set(item.date, item.isDone);
@@ -154,7 +154,7 @@ export function Calendar({ className, onSelectDate }: CalendarProps) {
       {/* 요일 헤더 */}
       <div className="grid grid-cols-7 gap-2 mb-2">
         {weekDays.map((day) => (
-          <div key={day} className="text-center text-xs font-semibold text-gray-500">
+          <div key={day} className="text-center text-sm font-semibold text-gray-500">
             {day}
           </div>
         ))}

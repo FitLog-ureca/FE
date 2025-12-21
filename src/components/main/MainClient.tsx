@@ -85,14 +85,14 @@ export default function MainClient() {
   return (
     <div className="md:h-[calc(100vh-72px)] grid w-full max-w-6xl grid-cols-1 gap-16 py-26 md:grid-cols-2">
       {/* LEFT */}
-      <section className="mt-[72px] flex flex-col items-center">
+      <section className="mt-[72px] flex flex-col items-center pb-6">
         <Calendar className="w-full" onSelectDate={setSelectedDate} />
         <FillLevel className="w-full mt-6" />
       </section>
 
       {/* RIGHT */}
       <section className="flex min-h-0 flex-col">
-        <div className="min-h-0 w-full overflow-y-auto md:h-full md:flex-1">
+        <div className="min-h-0 w-full overflow-y-auto md:h-full md:flex-1 pb-6">
           {/* 날짜 선택 안 했을 때만 */}
           {!selectedDate && !isLoading && !error && <Greeting />}
 
