@@ -75,6 +75,7 @@ export default function MainClient() {
         setsNumber: item.setsNumber,
         repsTarget: item.repsTarget,
         weight: item.weight ?? null,
+        restTime: item.restTime ?? null,
         isCompleted: item.isCompleted,
       });
     });
