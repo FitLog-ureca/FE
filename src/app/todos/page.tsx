@@ -5,7 +5,8 @@ import TodosContainer from "@/components/todos/TodosContainer";
 import BackToMainButton from "@/components/ui/BackToMainButton";
 
 export default function TodosPage() {
-  const today = new Date().toISOString().split("T")[0];
+  // const today = new Date().toISOString().split("T")[0];
+  const today = new Date().toLocaleDateString("en-CA");
 
   return (
     <div className="flex h-screen flex-col px-28">
@@ -13,7 +14,7 @@ export default function TodosPage() {
 
       <div className="grid w-full grid-cols-1 gap-16 px-32 pt-40 lg:grid-cols-2">
         <section className="flex justify-center">
-          <TodosContainer />
+          <TodosContainer date={today} />
         </section>
 
         <section className="flex items-center justify-center">

@@ -7,11 +7,14 @@ import { setTodosData } from "@/store/redux/features/todos/todoSlice";
 import { GroupedTodo } from "@/types/todos";
 import { useEffect, useMemo } from "react";
 
-export default function TodosContainer() {
+interface TodosContainerProps {
+  date: string;
+}
+
+export default function TodosContainer({ date }: TodosContainerProps) {
   const dispatch = useAppDispatch();
   const todosData = useAppSelector((state) => state.todos.data);
-  const today = new Date().toISOString().split("T")[0];
-  const { data: todosListData, isLoading, error } = useTodosByDate(today);
+  const { data: todosListData, isLoading, error } = useTodosByDate(date);
 
   // API 데이터가 변경되면 Redux에 저장
   useEffect(() => {
@@ -22,7 +25,7 @@ export default function TodosContainer() {
 
   // todos를 운동별로 그룹화
   const groupedTodos = useMemo(() => {
-    if (!todosData || !todosData.exercises || todosData.isDone) return [];
+    if (!todosData || !todosData.exercises) return [];
 
     const map = new Map<number, GroupedTodo>();
 
