@@ -14,7 +14,7 @@ export default function RecordSetList({ record }: { record: RecordWorkout }) {
       <div className="flex justify-start items-center gap-2">
         <h1 className="text-md font-semibold">{record.exerciseName}</h1>
         <span className="text-sm text-gray-500">-</span>
-        <span className="text-gray-500"><span className="font-semibold">{record.burnedCalories ?? 0}</span> kcal</span>
+        <span className="text-gray-500"><span className="font-semibold">{(record.burnedCalories ?? 0).toFixed(1)}</span> kcal</span>
       </div>
 
       {/* 세트 목록 */}

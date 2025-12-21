@@ -42,7 +42,7 @@ export default function RecordHeader({ selectedDate, totalCalories, isDone }: Re
       <section className="w-full flex gap-2 rounded-xl p-4 border border-fitlog-beige bg-white shadow-fitlog-btn-sm">
         <span className="font-semibold">총 소모 칼로리</span>
         <span>-</span>
-        <span className="font-semibold text-fitlog-500">{totalCalories}</span>
+        <span className="font-semibold text-fitlog-500">{totalCalories.toFixed(1)}</span>
         <span>kcal</span>
       </section>
     </div>

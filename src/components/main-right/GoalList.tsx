@@ -12,7 +12,7 @@ import { useDeleteWorkout } from "@/lib/tanstack/mutation/deleteWorkout";
 import { useUpdateSet } from "@/lib/tanstack/mutation/updateSet";
 
 export default function GoalList({ goals, selectedDate }: GoalListProps) {
-  const [completed, setCompleted] = useState(false);
+  const [completed, setCompleted] = useState(true);
   const { mutate: createTodo } = useCreateTodo(selectedDate);
   const { mutate: addSet } = useAddSet(selectedDate);
   const { mutate: deleteTodo } = useDeleteTodo(selectedDate);
