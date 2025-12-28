@@ -80,33 +80,31 @@
 
 - **로그인 (Login)**
   - DB에 저장된 회원 정보를 기반으로 아이디와 비밀번호를 검증하여 로그인할 수 있습니다.
-
-<table>
-  <tr>
-    <td>
-      <img src=".github/readme/login.gif" />
-    </td>
-  </tr>
-  <tr>
-    <td align="center">로그인</td>
-  </tr>
-</table>
+    <table>
+      <tr>
+        <td>
+          <img src=".github/readme/login.gif" />
+        </td>
+      </tr>
+      <tr>
+        <td align="center">로그인</td>
+      </tr>
+    </table>
 
 <br/>
 
 - **회원가입 (Sign Up)**
   - 회원 정보를 입력하여 회원가입을 진행할 수 있습니다.
-
-<table>
-  <tr>
-    <td>
-      <img src=".github/readme/signup.gif" />
-    </td>
-  </tr>
-  <tr>
-    <td align="center">회원가입</td>
-  </tr>
-</table>
+    <table>
+      <tr>
+        <td>
+          <img src=".github/readme/signup.gif" />
+        </td>
+      </tr>
+      <tr>
+        <td align="center">회원가입</td>
+      </tr>
+    </table>
 
 <br/>
 
@@ -117,55 +115,54 @@
 - **운동 목표 설정 / 삭제**
   - 날짜를 선택하여 운동 종목을 추가하고, 세트당 횟수와 무게를 설정할 수 있습니다.  
     (당일 및 미래 날짜의 목표 설정 가능)
-
-<table>
-  <tr>
-    <td>
-      <img src=".github/readme/workout-settings.gif" />
-    </td>
-    <td>
-      <img src=".github/readme/workout-remove.gif" />
-    </td>
-  </tr>
-  <tr>
-    <td align="center">운동 목표 설정</td>
-    <td align="center">운동 목표 삭제</td>
-  </tr>
-</table>
+    <table>
+      <tr>
+        <td>
+          <img src=".github/readme/workout-settings.gif" />
+        </td>
+        <td>
+          <img src=".github/readme/workout-remove.gif" />
+        </td>
+      </tr>
+      <tr>
+        <td align="center">운동 목표 설정</td>
+        <td align="center">운동 목표 삭제</td>
+      </tr>
+    </table>
 
 <br/>
 
 - **운동 기록 확인**
   - 현재까지의 운동 기록을 확인할 수 있습니다.
-  <table>
-    <tr>
-      <td>
-        <img src=".github/readme/record-no.png" />
-      </td>
-      <td>
-        <img src=".github/readme/record-yes.png" />
-      </td>
-    </tr>
-    <tr>
-      <td align="center">운동 기록 없음</td>
-      <td align="center">운동 기록 있음</td>
-    </tr>
-  </table>
+    <table>
+      <tr>
+        <td>
+          <img src=".github/readme/record-no.png" />
+        </td>
+        <td>
+          <img src=".github/readme/record-yes.png" />
+        </td>
+      </tr>
+      <tr>
+        <td align="center">운동 기록 없음</td>
+        <td align="center">운동 기록 있음</td>
+      </tr>
+    </table>
 
 <br/>
 
 - **잔디형 캘린더 시각화**
   - 날짜별 운동 완료 상태를 색상으로 시각화합니다.
-  <table>
-    <tr>
-      <td><img width="300" src=".github/readme/calendar-default.png" /></td>
-      <td><img width="300" src=".github/readme/calendar.png" /></td>
-    </tr>
-    <tr>
-      <td align="center">기본 상태</td>
-      <td align="center">운동 완료 상태</td>
-    </tr>
-  </table>
+    <table>
+      <tr>
+        <td><img width="300" src=".github/readme/calendar-default.png" /></td>
+        <td><img width="300" src=".github/readme/calendar.png" /></td>
+      </tr>
+      <tr>
+        <td align="center">기본 상태</td>
+        <td align="center">운동 완료 상태</td>
+      </tr>
+    </table>
 
 <br/>
 
@@ -173,64 +170,60 @@
 
 - **프로필 조회 / 수정**
   - 이름, 나이(만 나이 자동 계산), 자기소개, 프로필 이미지를 관리할 수 있습니다.
-
-<table>
-  <tr>
-    <td><img width="250" src=".github/readme/profile-read.png" /></td>
-    <td><img width="250" src=".github/readme/profile-edit.png" /></td>
-  </tr>
-  <tr>
-    <td align="center">프로필 조회</td>
-    <td align="center">프로필 수정</td>
-  </tr>
-</table>
+    <table>
+      <tr>
+        <td><img width="250" src=".github/readme/profile-read.png" /></td>
+        <td><img width="250" src=".github/readme/profile-edit.png" /></td>
+      </tr>
+      <tr>
+        <td align="center">프로필 조회</td>
+        <td align="center">프로필 수정</td>
+      </tr>
+    </table>
 
 <br/>
 
 ### **세부 페이지**
 
-- **운동 세트 완료 체크**  
-  개별 세트를 완료하면 체크 박스를 통해 완료 여부를 기록할 수 있습니다.
-
-<table>
-  <tr>
-    <td><img src=".github/readme/workout-complete.gif" /></td>
-  </tr>
-  <tr>
-    <td align="center">세트 완료 체크</td>
-  </tr>
-</table>
+- **운동 세트 완료 체크**
+  - 개별 세트를 완료하면 체크 박스를 통해 완료 여부를 기록할 수 있습니다.
+    <table>
+      <tr>
+        <td><img src=".github/readme/workout-complete.gif" /></td>
+      </tr>
+      <tr>
+        <td align="center">세트 완료 체크</td>
+      </tr>
+    </table>
 
 <br/>
 
 - **휴식 / 타이머 기능**
   - 세트 완료 후 휴식 타이머를 실행하고, 휴식 시간을 기록하거나 초기화할 수 있습니다.
-
-<table>
-  <tr>
-    <td><img src=".github/readme/rest-record.gif" /></td>
-    <td><img src=".github/readme/rest-reset.gif" /></td>
-  </tr>
-  <tr>
-    <td align="center">휴식 기록</td>
-    <td align="center">휴식 초기화</td>
-  </tr>
-</table>
+    <table>
+      <tr>
+        <td><img src=".github/readme/rest-record.gif" /></td>
+        <td><img src=".github/readme/rest-reset.gif" /></td>
+      </tr>
+      <tr>
+        <td align="center">휴식 기록</td>
+        <td align="center">휴식 초기화</td>
+      </tr>
+    </table>
 
 <br/>
 
 ### **에러 페이지**
 
 - **404 에러 페이지**
-
-<table>
-  <tr>
-    <td><img width="1000" src=".github/readme/404.png" /></td>
-  </tr>
-  <tr>
-    <td align="center">404 에러</td>
-  </tr>
-</table>
+  <table>
+    <tr>
+      <td><img width="1000" src=".github/readme/404.png" /></td>
+    </tr>
+    <tr>
+      <td align="center">404 에러</td>
+    </tr>
+  </table>
 
 <br/>
 
